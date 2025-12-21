@@ -221,3 +221,5 @@ if __name__ == "__main__":
     postfix = builder._infix_to_postfix(regex)
     print("中缀表达式:", regex)
     print("后缀表达式:", postfix)
+    nfa = builder.build_nfa(regex)
+    nfa.visualize()

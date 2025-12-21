@@ -1,0 +1,169 @@
+========================================
+        递归下降解析日志
+========================================
+
+进入 <Program>
+  进入 <StmtList>
+    进入 <Stmt>
+      进入 <ForStmt>
+        进入 <DeclStmt>
+          match int (int)
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (0)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <DeclStmt>
+        进入 <Stmt>
+          进入 <Block>
+            进入 <StmtList>
+              进入 <Stmt>
+                进入 <ForStmt>
+                  进入 <DeclStmt>
+                    match int (int)
+                    match = (=)
+                    进入 <Expr>
+                      进入 <AddExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              match NUM (0)
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                      退出 <AddExpr>
+                    退出 <Expr>
+                  退出 <DeclStmt>
+                  进入 <Stmt>
+                    进入 <Block>
+                      进入 <StmtList>
+                        进入 <Stmt>
+                          进入 <AssignStmt>
+                            进入 <AssignExpr>
+                              match = (=)
+                              进入 <Expr>
+                                进入 <AddExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (x)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (i)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (j)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                退出 <AddExpr>
+                              退出 <Expr>
+                            退出 <AssignExpr>
+
+【赋值语句分析表】x=x+i*j;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            x             x=x+i*j;
+Expr -> Term ExprP          x=              x             x+i*j;
+Term -> Factor TermP        x=              x             x+i*j;
+Factor -> id                x=              x             x+i*j;
+TermP -> ε                  x=x             +             +i*j;
+ExprP -> + Term ExprP       x=x             +             +i*j;
+Term -> Factor TermP        x=x+            i             i*j;
+Factor -> id                x=x+            i             i*j;
+TermP -> * Factor TermP      x=x+i           *             *j;
+Factor -> id                x=x+i*          j             j;
+TermP -> ε                  x=x+i*j         ;             ;
+ExprP -> ε                  x=x+i*j         ;             ;
+
+                          退出 <AssignStmt>
+                        退出 <Stmt>
+                        进入 <Stmt>
+                          进入 <AssignStmt>
+                            进入 <AssignExpr>
+                              match = (=)
+                              进入 <Expr>
+                                进入 <AddExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (x)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match NUM (1)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                退出 <AddExpr>
+                              退出 <Expr>
+                            退出 <AssignExpr>
+
+【赋值语句分析表】x=x+1;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            x             x=x+1;
+Expr -> Term ExprP          x=              x             x+1;
+Term -> Factor TermP        x=              x             x+1;
+Factor -> id                x=              x             x+1;
+TermP -> ε                  x=x             +             +1;
+ExprP -> + Term ExprP       x=x             +             +1;
+Term -> Factor TermP        x=x+            1             1;
+Factor -> num               x=x+            1             1;
+TermP -> ε                  x=x+1           ;             ;
+ExprP -> ε                  x=x+1           ;             ;
+
+                          退出 <AssignStmt>
+                        退出 <Stmt>
+                      退出 <StmtList>
+                    退出 <Block>
+                  退出 <Stmt>
+                退出 <ForStmt>
+              退出 <Stmt>
+            退出 <StmtList>
+          退出 <Block>
+        退出 <Stmt>
+      退出 <ForStmt>
+    退出 <Stmt>
+  退出 <StmtList>
+退出 <Program>
+
+========================================
+      语义/中间代码生成日志
+========================================
+
+i = 0
+L1:
+t1 = i < n
+ifFalse t1 goto L2
+j = 0
+L3:
+t2 = j < m
+ifFalse t2 goto L4
+t3 = i * j
+t4 = x + t3
+x = t4
+t5 = x + 1
+x = t5
+t6 = j + 1
+j = t6
+goto L3
+L4:
+t7 = i + 1
+i = t7
+goto L1
+L2:

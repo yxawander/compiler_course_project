@@ -4,12 +4,12 @@ from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
-from ..dfa.dfa import DFA
-from ..dfa.dfa_state import DFAState
-from ..dfa.dfa_minimizer import DFAMinimizer
-from ..dfa.nfa_to_dfa_converter import NFAToDFAConverter
-from ..nfa.nfa_builder import NFABuilder
-from .token import Token
+from dfa.dfa import DFA
+from dfa.dfa_state import DFAState
+from dfa.dfa_minimizer import DFAMinimizer
+from dfa.nfa_to_dfa_converter import NFAToDFAConverter
+from nfa.nfa_builder import NFABuilder
+from lexer.token import Token
 
 
 @dataclass

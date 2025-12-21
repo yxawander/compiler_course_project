@@ -4,8 +4,8 @@ from collections import deque
 from dataclasses import dataclass, field
 from typing import Deque, List
 
-from .nfa import NFA
-from .nfa_node import NFANode
+from nfa.nfa import NFA
+from nfa.nfa_node import NFANode
 
 
 @dataclass
@@ -16,19 +16,25 @@ class NFABuilder:
     - 仅把 '|~*()' 视为运算符；其他字符都当作普通字符
     - 支持转义序列：\\n, \\t, \\r, \\0，以及默认转义（例如 \\| 表示字面量 '|')
     """
-
+    
+    # 每创建一个 NFANode 都会 +1
     state_counter: int = 0
+    # NFA 栈，在 后缀 转 NFA 过程中使用
     nfa_stack: Deque[NFA] = field(default_factory=deque)
+    # 运算符栈，在 中缀 转 后缀 过程中使用
     op_stack: Deque[str] = field(default_factory=deque)
 
     def _next_state_id(self) -> int:
         self.state_counter += 1
         return self.state_counter
 
+    # 判断是否为运算符
     @staticmethod
     def _is_operator(ch: str) -> bool:
         return ch in "|~*()"
-
+    
+    # 运算符优先级
+    # *为闭包，~为连接，|为或（注意~是人为假设的）
     @staticmethod
     def _priority(op: str) -> int:
         if op == "*":
@@ -55,13 +61,14 @@ class NFABuilder:
             return esc
         return token[0]
 
+    # 中缀表达式转后缀表达式
     def _infix_to_postfix(self, regex: str) -> List[str]:
         processed = regex + "#"
         output: List[str] = []
         self.op_stack.clear()
 
         i = 0
-        prev_char = "#"  # 用于判断是否插入连接符
+        prev_char = "#"  # 记录上一个已处理 token 的类型，用来判断“当前 token 前面是否可以合法连接”，作为初始哨兵（sentinel），表示“还没有处理任何字符”，保证表达式开头不会错误地插入隐式连接符 ~
 
         while i < len(processed):
             current = processed[i]
@@ -201,10 +208,16 @@ class NFABuilder:
                 old = self.nfa_stack.pop()
                 self.nfa_stack.append(self._meet_star(old))
             else:
-                # 理论上不会出现
                 raise ValueError(f"Unsupported operator: {op}")
 
         if len(self.nfa_stack) != 1:
             raise ValueError(f"Invalid regex expression: {regex}")
 
         return self.nfa_stack.pop()
+
+if __name__ == "__main__":
+    builder = NFABuilder()
+    regex = "a(b|c)*d"
+    postfix = builder._infix_to_postfix(regex)
+    print("中缀表达式:", regex)
+    print("后缀表达式:", postfix)

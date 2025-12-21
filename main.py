@@ -97,21 +97,22 @@ def read_source_file(path: Path) -> Optional[str]:
 
 def get_output_file_path(source_file: Path) -> Path:
     base = source_file.stem
-    return source_file.with_name(f"{base}_lexer_output.txt")
+    return source_file.with_name(f"{base}_词法分析结果.txt")
 
 
 def get_regex_dfa_output_file_path(source_file: Path) -> Path:
     base = source_file.stem
-    return source_file.with_name(f"{base}_regex_dfa.txt")
+    return source_file.with_name(f"{base}_正规式与DFA.txt")
+
 
 def get_tac_output_file_path(source_file: Path) -> Path:
     base = source_file.stem
-    return source_file.with_name(f"{base}_tac_output.txt")
+    return source_file.with_name(f"{base}_三地址码与四元式.txt")
 
 
 def get_rd_parser_log_file_path(source_file: Path) -> Path:
     base = source_file.stem
-    return source_file.with_name(f"{base}_rd_parser_log.txt")
+    return source_file.with_name(f"{base}_递归下降日志.txt")
 
 
 def format_lexeme_for_display(lexeme: Optional[str]) -> str:

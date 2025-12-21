@@ -4,10 +4,10 @@ from collections import deque
 from dataclasses import dataclass
 from typing import Deque, Dict, FrozenSet, List, Optional, Set
 
-from ..nfa.nfa import NFA
-from ..nfa.nfa_node import NFANode
-from .dfa import DFA
-from .dfa_state import DFAState
+from nfa.nfa import NFA
+from nfa.nfa_node import NFANode
+from dfa.dfa import DFA
+from dfa.dfa_state import DFAState
 
 
 @dataclass

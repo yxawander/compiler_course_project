@@ -4,8 +4,8 @@ from collections import deque
 from dataclasses import dataclass
 from typing import Deque, Dict, List, Set
 
-from .dfa import DFA
-from .dfa_state import DFAState
+from dfa.dfa import DFA
+from dfa.dfa_state import DFAState
 
 
 @dataclass

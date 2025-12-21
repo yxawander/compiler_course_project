@@ -3,9 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional, Sequence, Set, Tuple
 
-from .errors import ParseError
-from .stream import SyntaxToken, TokenStream
-from .tac import TACEmitter
+from parser.errors import ParseError
+from parser.stream import SyntaxToken, TokenStream
+from parser.tac import TACEmitter
 
 
 _TYPE_KEYWORDS = {"int", "float", "double", "char"}

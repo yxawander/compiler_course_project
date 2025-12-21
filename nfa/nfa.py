@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .nfa_node import NFANode
+from nfa.nfa_node import NFANode
 
 
 @dataclass(frozen=True)

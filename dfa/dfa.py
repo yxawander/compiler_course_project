@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional, Set
 
-from .dfa_state import DFAState
+from dfa.dfa_state import DFAState
 
 
 @dataclass

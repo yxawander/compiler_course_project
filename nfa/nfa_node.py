@@ -14,17 +14,21 @@ class NFANode:
 
     注意：该设计假定一个结点要么是字符转移（path_char != None），要么是 ε 结点（path_char == None）。
     """
-
+    # 结点状态 ID
     state_id: int
+    # 转移字符，None 表示 ε 转移
     path_char: Optional[str] = None
+    # 下一个结点列表
     next_nodes: List[NFANode] = field(default_factory=list)
 
+    # 添加字符转移
     def add_transition(self, character: str, target_node: NFANode) -> None:
         if len(character) != 1:
             raise ValueError("character must be a single character")
         self.path_char = character
         self.next_nodes.append(target_node)
 
+    # 添加 ε 转移
     def add_epsilon_transition(self, target_node: NFANode) -> None:
         self.next_nodes.append(target_node)
 

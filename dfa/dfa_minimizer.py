@@ -61,7 +61,6 @@ class DFAMinimizer:
                         changed = True
 
                         # Python 的 set 无法直接判断“contains Y”是否同一对象，
-                        # 这里用集合相等判断来复刻 Java workSet.contains(Y)
                         idx_to_remove = None
                         for idx, item in enumerate(work_set):
                             if item == Y:
@@ -84,6 +83,7 @@ class DFAMinimizer:
 
         return partition
 
+    # 找出所有能通过 symbol 转移到 target_set 中状态的前驱状态
     @staticmethod
     def _find_predecessors(dfa: DFA, target_set: Set[DFAState], symbol: str) -> Set[DFAState]:
         predecessors: Set[DFAState] = set()

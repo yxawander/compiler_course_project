@@ -9,6 +9,7 @@ class DFAState:
     state_id: int
     nfa_states: Set[int]
     transitions: Dict[str, "DFAState"] = field(default_factory=dict)
+    # 是否为接受状态（终止状态）
     is_accepting: bool = False
 
     def add_transition(self, symbol: str, target_state: "DFAState") -> None:

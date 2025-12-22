@@ -60,12 +60,12 @@ class DFALexer:
 
         for token_type, pattern in patterns.items():
             try:
+                # 词法分析完整流程：正规式 -> NFA -> DFA -> 最小化DFA
                 nfa = nfa_builder.build_nfa(pattern)
                 dfa = NFAToDFAConverter(nfa).convert_to_dfa()
                 minimized = DFAMinimizer().minimize(dfa)
                 self.token_dfas[token_type] = minimized
             except Exception as e:
-                # 与 Java 版一致：构建失败就输出错误信息，但不抛出
                 print(f"❌ 构建 {token_type} 失败: {e}")
 
     def dump_patterns_and_dfas(self) -> str:

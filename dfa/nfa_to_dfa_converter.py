@@ -97,9 +97,10 @@ class NFAToDFAConverter:
         unprocessed.append(start_state)
 
         while unprocessed:
-            current = unprocessed.pop()
+            # FIFO + sorted alphabet => deterministic state discovery/order
+            current = unprocessed.popleft()
 
-            for symbol in self._alphabet:
+            for symbol in sorted(self._alphabet):
                 moved = self._move(current.nfa_states, symbol)
                 if not moved:
                     continue

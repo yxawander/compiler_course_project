@@ -40,7 +40,7 @@ class DFAMinimizer:
         while work_set:
             A = work_set.popleft()
 
-            for symbol in dfa.alphabet:
+            for symbol in sorted(dfa.alphabet):
                 X = self._find_predecessors(dfa, A, symbol)
                 if not X:
                     continue
@@ -119,10 +119,11 @@ class DFAMinimizer:
 
         # 建转移：选 block 内任一代表状态即可
         for block in final_partition:
-            rep = next(iter(block))
+            # 选择 state_id 最小的作为代表，保证输出稳定
+            rep = min(block, key=lambda s: s.state_id)
             new_state = block_to_state[frozenset(block)]
 
-            for symbol in original_dfa.alphabet:
+            for symbol in sorted(original_dfa.alphabet):
                 old_target = rep.get_transition(symbol)
                 if old_target is None:
                     continue

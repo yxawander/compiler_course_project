@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass
-from typing import Deque, Dict, FrozenSet, List, Optional, Set
+from typing import Deque, Dict, FrozenSet, List, Set, Tuple
 
 from nfa.nfa import NFA
 from nfa.nfa_node import NFANode
@@ -15,48 +15,34 @@ class NFAToDFAConverter:
     nfa: NFA
 
     def __post_init__(self) -> None:
-        self._alphabet: Set[str] = self._extract_alphabet(self.nfa)
+        self._node_by_id, self._alphabet = self._index_nfa(self.nfa)
         self._dfa_state_counter: int = 0
 
     @staticmethod
-    def _extract_alphabet(nfa: NFA) -> Set[str]:
+    def _index_nfa(nfa: NFA) -> Tuple[Dict[int, NFANode], Set[str]]:
+        """一次遍历 NFA，建立 id->node 索引并提取字母表。
+
+        原实现中 epsilon_closure/move 会反复调用 _find_nfa_node_by_id，
+        每次都从起点全图遍历，导致构造 DFA 时开销被成倍放大。
+        """
+        node_by_id: Dict[int, NFANode] = {}
         symbols: Set[str] = set()
-        visited: Set[int] = set()
         stack: Deque[NFANode] = deque([nfa.start_node])
 
         while stack:
             current = stack.pop()
-            if current.state_id in visited:
+            if current.state_id in node_by_id:
                 continue
-            visited.add(current.state_id)
+            node_by_id[current.state_id] = current
 
             if current.path_char is not None:
                 symbols.add(current.path_char)
 
             for nxt in current.next_nodes:
-                if nxt.state_id not in visited:
+                if nxt.state_id not in node_by_id:
                     stack.append(nxt)
 
-        return symbols
-
-    def _find_nfa_node_by_id(self, state_id: int) -> Optional[NFANode]:
-        visited: Set[int] = set()
-        stack: Deque[NFANode] = deque([self.nfa.start_node])
-
-        while stack:
-            current = stack.pop()
-            if current.state_id in visited:
-                continue
-            visited.add(current.state_id)
-
-            if current.state_id == state_id:
-                return current
-
-            for nxt in current.next_nodes:
-                if nxt.state_id not in visited:
-                    stack.append(nxt)
-
-        return None
+        return node_by_id, symbols
 
     def _epsilon_closure(self, states: Set[int]) -> Set[int]:
         closure: Set[int] = set(states)
@@ -64,7 +50,7 @@ class NFAToDFAConverter:
 
         while stack:
             state_id = stack.pop()
-            node = self._find_nfa_node_by_id(state_id)
+            node = self._node_by_id.get(state_id)
             if node is None:
                 continue
 
@@ -80,7 +66,7 @@ class NFAToDFAConverter:
     def _move(self, states: Set[int], symbol: str) -> Set[int]:
         result: Set[int] = set()
         for state_id in states:
-            node = self._find_nfa_node_by_id(state_id)
+            node = self._node_by_id.get(state_id)
             if node is None:
                 continue
 

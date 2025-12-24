@@ -27,7 +27,7 @@ class DFA:
         lines.append(f"字母表: {sorted(self.alphabet)}")
         lines.append("转移表:")
         for state in self.states:
-            for symbol in sorted(self.alphabet):
+            for symbol in sorted(state.transitions.keys()):
                 target = state.get_transition(symbol)
                 if target is not None:
                     lines.append(f"  {state.state_id} --{symbol}--> {target.state_id}")

@@ -1,0 +1,428 @@
+========================================
+        递归下降解析日志
+========================================
+
+进入 <Program>
+  进入 <StmtList>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> AssignStmt ;
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (6)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <AssignExpr>
+
+【赋值语句分析表】n=6;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            n             n=6;
+Expr -> Term ExprP          n=              6             6;
+Term -> Factor TermP        n=              6             6;
+Factor -> num               n=              6             6;
+TermP -> ε                  n=6             ;             ;
+ExprP -> ε                  n=6             ;             ;
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> AssignStmt ;
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (1)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <AssignExpr>
+
+【赋值语句分析表】a=1;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            a             a=1;
+Expr -> Term ExprP          a=              1             1;
+Term -> Factor TermP        a=              1             1;
+Factor -> num               a=              1             1;
+TermP -> ε                  a=1             ;             ;
+ExprP -> ε                  a=1             ;             ;
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> AssignStmt ;
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (2)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <AssignExpr>
+
+【赋值语句分析表】b=2;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            b             b=2;
+Expr -> Term ExprP          b=              2             2;
+Term -> Factor TermP        b=              2             2;
+Factor -> num               b=              2             2;
+TermP -> ε                  b=2             ;             ;
+ExprP -> ε                  b=2             ;             ;
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> AssignStmt ;
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (3)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <AssignExpr>
+
+【赋值语句分析表】c=3;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            c             c=3;
+Expr -> Term ExprP          c=              3             3;
+Term -> Factor TermP        c=              3             3;
+Factor -> num               c=              3             3;
+TermP -> ε                  c=3             ;             ;
+ExprP -> ε                  c=3             ;             ;
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> ForStmt
+      进入 <ForStmt>
+        使用产生式: ForStmt -> for ( ForInitOpt ; ForCondOpt ; ForIterOpt ) Stmt
+        使用产生式: ForInitOpt -> DeclStmt
+        进入 <DeclStmt>
+          match int (int)
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (0)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <DeclStmt>
+        使用产生式: ForCondOpt -> Expr
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match IDENT (i)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match IDENT (n)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+        使用产生式: ForIterOpt -> AssignStmt | IncDec
+        进入 <AssignStmt>
+          进入 <AssignExpr>
+            match += (+=)
+            进入 <Expr>
+              进入 <AddExpr>
+                进入 <MulExpr>
+                  进入 <Unary>
+                    进入 <Primary>
+                      match NUM (1)
+                    退出 <Primary>
+                  退出 <Unary>
+                退出 <MulExpr>
+              退出 <AddExpr>
+            退出 <Expr>
+          退出 <AssignExpr>
+        退出 <AssignStmt>
+        进入 <Stmt>
+          使用产生式: Stmt -> Block
+          进入 <Block>
+            进入 <StmtList>
+              进入 <Stmt>
+                使用产生式: Stmt -> AssignStmt ;
+                进入 <AssignStmt>
+                  进入 <AssignExpr>
+                    match = (=)
+                    进入 <Expr>
+                      进入 <AddExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              match IDENT (a)
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              match IDENT (b)
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                      退出 <AddExpr>
+                    退出 <Expr>
+                  退出 <AssignExpr>
+
+【赋值语句分析表】a=a+b;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            a             a=a+b;
+Expr -> Term ExprP          a=              a             a+b;
+Term -> Factor TermP        a=              a             a+b;
+Factor -> id                a=              a             a+b;
+TermP -> ε                  a=a             +             +b;
+ExprP -> + Term ExprP       a=a             +             +b;
+Term -> Factor TermP        a=a+            b             b;
+Factor -> id                a=a+            b             b;
+TermP -> ε                  a=a+b           ;             ;
+ExprP -> ε                  a=a+b           ;             ;
+
+                退出 <AssignStmt>
+              退出 <Stmt>
+              进入 <Stmt>
+                使用产生式: Stmt -> AssignStmt ;
+                进入 <AssignStmt>
+                  进入 <AssignExpr>
+                    match = (=)
+                    进入 <Expr>
+                      进入 <AddExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              match IDENT (b)
+                            退出 <Primary>
+                          退出 <Unary>
+                          进入 <Unary>
+                            进入 <Primary>
+                              match NUM (2)
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                      退出 <AddExpr>
+                    退出 <Expr>
+                  退出 <AssignExpr>
+
+【赋值语句分析表】b=b*2;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            b             b=b*2;
+Expr -> Term ExprP          b=              b             b*2;
+Term -> Factor TermP        b=              b             b*2;
+Factor -> id                b=              b             b*2;
+TermP -> * Factor TermP      b=b             *             *2;
+Factor -> num               b=b*            2             2;
+TermP -> ε                  b=b*2           ;             ;
+ExprP -> ε                  b=b*2           ;             ;
+
+                退出 <AssignStmt>
+              退出 <Stmt>
+              进入 <Stmt>
+                使用产生式: Stmt -> AssignStmt ;
+                进入 <AssignStmt>
+                  进入 <AssignExpr>
+                    match += (+=)
+                    进入 <Expr>
+                      进入 <AddExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              进入 <Expr>
+                                进入 <AddExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (a)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (i)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                退出 <AddExpr>
+                              退出 <Expr>
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                      退出 <AddExpr>
+                    退出 <Expr>
+                  退出 <AssignExpr>
+
+【赋值语句分析表】c+=(a-i);
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id += Expr ;                           c             c+=(a-i);
+Expr -> Term ExprP          c+=             (             (a-i);
+Term -> Factor TermP        c+=             (             (a-i);
+Factor -> ( Expr )          c+=             (             (a-i);
+Expr -> Term ExprP          c+=(            a             a-i);
+Term -> Factor TermP        c+=(            a             a-i);
+Factor -> id                c+=(            a             a-i);
+TermP -> ε                  c+=(a           -             -i);
+ExprP -> - Term ExprP       c+=(a           -             -i);
+Term -> Factor TermP        c+=(a-          i             i);
+Factor -> id                c+=(a-          i             i);
+TermP -> ε                  c+=(a-i         )             );
+ExprP -> ε                  c+=(a-i         )             );
+TermP -> ε                  c+=(a-i)        ;             ;
+ExprP -> ε                  c+=(a-i)        ;             ;
+
+                退出 <AssignStmt>
+              退出 <Stmt>
+              进入 <Stmt>
+                使用产生式: Stmt -> AssignStmt ;
+                进入 <AssignStmt>
+                  进入 <AssignExpr>
+                    match *= (*=)
+                    进入 <Expr>
+                      进入 <AddExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              进入 <Expr>
+                                进入 <AddExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (c)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match NUM (1)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                退出 <AddExpr>
+                              退出 <Expr>
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                      退出 <AddExpr>
+                    退出 <Expr>
+                  退出 <AssignExpr>
+
+【赋值语句分析表】a*=(c+1);
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id *= Expr ;                           a             a*=(c+1);
+Expr -> Term ExprP          a*=             (             (c+1);
+Term -> Factor TermP        a*=             (             (c+1);
+Factor -> ( Expr )          a*=             (             (c+1);
+Expr -> Term ExprP          a*=(            c             c+1);
+Term -> Factor TermP        a*=(            c             c+1);
+Factor -> id                a*=(            c             c+1);
+TermP -> ε                  a*=(c           +             +1);
+ExprP -> + Term ExprP       a*=(c           +             +1);
+Term -> Factor TermP        a*=(c+          1             1);
+Factor -> num               a*=(c+          1             1);
+TermP -> ε                  a*=(c+1         )             );
+ExprP -> ε                  a*=(c+1         )             );
+TermP -> ε                  a*=(c+1)        ;             ;
+ExprP -> ε                  a*=(c+1)        ;             ;
+
+                退出 <AssignStmt>
+              退出 <Stmt>
+            退出 <StmtList>
+          退出 <Block>
+        退出 <Stmt>
+      退出 <ForStmt>
+    退出 <Stmt>
+  退出 <StmtList>
+退出 <Program>
+
+========================================
+      语义/中间代码生成日志
+========================================
+
+n = 6
+a = 1
+b = 2
+c = 3
+i = 0
+L1:
+t1 = i < n
+ifFalse t1 goto L2
+t3 = a + b
+a = t3
+t4 = b * 2
+b = t4
+t5 = a - i
+t6 = c + t5
+c = t6
+t7 = c + 1
+t8 = a * t7
+a = t8
+t2 = i + 1
+i = t2
+goto L1
+L2:

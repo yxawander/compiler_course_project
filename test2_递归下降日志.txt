@@ -5,7 +5,10 @@
 进入 <Program>
   进入 <StmtList>
     进入 <Stmt>
+      使用产生式: Stmt -> ForStmt
       进入 <ForStmt>
+        使用产生式: ForStmt -> for ( ForInitOpt ; ForCondOpt ; ForIterOpt ) Stmt
+        使用产生式: ForInitOpt -> DeclStmt
         进入 <DeclStmt>
           match int (int)
           match = (=)
@@ -21,11 +24,40 @@
             退出 <AddExpr>
           退出 <Expr>
         退出 <DeclStmt>
+        使用产生式: ForCondOpt -> Expr
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match IDENT (i)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match IDENT (n)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+        使用产生式: ForIterOpt -> AssignStmt | IncDec
+        进入 <IncDec>
+          match ++ (++)
+        退出 <IncDec>
         进入 <Stmt>
+          使用产生式: Stmt -> Block
           进入 <Block>
             进入 <StmtList>
               进入 <Stmt>
+                使用产生式: Stmt -> ForStmt
                 进入 <ForStmt>
+                  使用产生式: ForStmt -> for ( ForInitOpt ; ForCondOpt ; ForIterOpt ) Stmt
+                  使用产生式: ForInitOpt -> DeclStmt
                   进入 <DeclStmt>
                     match int (int)
                     match = (=)
@@ -41,10 +73,37 @@
                       退出 <AddExpr>
                     退出 <Expr>
                   退出 <DeclStmt>
+                  使用产生式: ForCondOpt -> Expr
+                  进入 <Expr>
+                    进入 <AddExpr>
+                      进入 <MulExpr>
+                        进入 <Unary>
+                          进入 <Primary>
+                            match IDENT (j)
+                          退出 <Primary>
+                        退出 <Unary>
+                      退出 <MulExpr>
+                    退出 <AddExpr>
+                    进入 <AddExpr>
+                      进入 <MulExpr>
+                        进入 <Unary>
+                          进入 <Primary>
+                            match IDENT (m)
+                          退出 <Primary>
+                        退出 <Unary>
+                      退出 <MulExpr>
+                    退出 <AddExpr>
+                  退出 <Expr>
+                  使用产生式: ForIterOpt -> AssignStmt | IncDec
+                  进入 <IncDec>
+                    match ++ (++)
+                  退出 <IncDec>
                   进入 <Stmt>
+                    使用产生式: Stmt -> Block
                     进入 <Block>
                       进入 <StmtList>
                         进入 <Stmt>
+                          使用产生式: Stmt -> AssignStmt ;
                           进入 <AssignStmt>
                             进入 <AssignExpr>
                               match = (=)
@@ -110,19 +169,19 @@ ExprP -> ε                  x=x+i*j         ;             ;
 i = 0
 L1:
 t1 = i < n
-ifFalse t1 goto L2
+ifFalse t1 goto L4
 j = 0
-L3:
-t2 = j < m
-ifFalse t2 goto L4
-t3 = i * j
-t4 = x + t3
-x = t4
-t5 = j + 1
-j = t5
-goto L3
-L4:
-t6 = i + 1
-i = t6
-goto L1
 L2:
+t3 = j < m
+ifFalse t3 goto L3
+t5 = i * j
+t6 = x + t5
+x = t6
+t4 = j + 1
+j = t4
+goto L2
+L3:
+t2 = i + 1
+i = t2
+goto L1
+L4:

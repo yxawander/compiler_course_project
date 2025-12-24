@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import Iterable, List, Optional, Tuple
 
 
 # 四元式数据结构
@@ -59,6 +59,41 @@ class TACEmitter:
 
     def emit_if_false(self, cond_place: str, label: str) -> None:
         self.emit("ifFalse", arg1=cond_place, result=label)
+
+    # ---------------- backpatch helpers (拉链回填) ----------------
+    def emit_goto_placeholder(self) -> int:
+        """生成一个目标未确定的 goto，返回该四元式在 quads 中的下标。"""
+        self.emit("goto", result="")
+        return len(self.quads) - 1
+
+    def emit_if_false_placeholder(self, cond_place: str) -> int:
+        """生成一个目标未确定的 ifFalse，返回该四元式在 quads 中的下标。"""
+        self.emit("ifFalse", arg1=cond_place, result="")
+        return len(self.quads) - 1
+
+    @staticmethod
+    def merge_patch_lists(*lists: Iterable[int]) -> List[int]:
+        out: List[int] = []
+        for lst in lists:
+            out.extend(list(lst))
+        return out
+
+    def backpatch(self, patch_list: Iterable[int], label: str) -> None:
+        """把 patch_list 中的跳转目标统一回填为 label。
+
+        约定：patch_list 存的是 self.quads 的下标。
+        """
+        for idx in patch_list:
+            if idx < 0 or idx >= len(self.quads):
+                continue
+            q = self.quads[idx]
+            if q.op not in {"goto", "ifFalse", "if"}:
+                continue
+            patched = Quad(op=q.op, arg1=q.arg1, arg2=q.arg2, result=label)
+            self.quads[idx] = patched
+            # 同步语义日志（RDParser 用 emitter.trace 输出）
+            if 0 <= idx < len(self.trace):
+                self.trace[idx] = patched.format_three_address()
 
     def as_text(self) -> str:
         lines: List[str] = []

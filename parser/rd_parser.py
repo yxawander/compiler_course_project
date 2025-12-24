@@ -5,7 +5,7 @@ from typing import List, Optional, Sequence, Set, Tuple
 
 from parser.errors import ParseError
 from parser.stream import SyntaxToken, TokenStream
-from parser.tac import TACEmitter
+from parser.tac import Quad, TACEmitter
 
 
 _TYPE_KEYWORDS = {"int", "float", "double", "char"}
@@ -13,6 +13,62 @@ _REL_OPS = {"<", "<=", ">", ">=", "==", "!="}
 _ADD_OPS = {"+", "-"}
 _MUL_OPS = {"*", "/"}
 _ASSIGN_OPS = {"=", "+=", "-=", "*=", "/="}
+_UNARY_PREFIX_OPS = {"+", "-", "!"}
+
+# FIRST 集合（用于 SELECT 集合判定）
+_FIRST_PRIMARY = {"IDENT", "NUM", "("}
+_FIRST_EXPR = set(_FIRST_PRIMARY) | set(_UNARY_PREFIX_OPS)
+
+# SELECT 集合（用于按 1 个 lookahead 选择产生式）
+_SELECT_STMT_FOR = {"for"}
+_SELECT_STMT_BLOCK = {"{"}
+_SELECT_STMT_DECL = set(_TYPE_KEYWORDS)
+_SELECT_STMT_EMPTY = {";"}
+_SELECT_STMT_PREFIX_INCDEC = {"++", "--"}
+_SELECT_STMT_IDENT = {"IDENT"}
+
+_SELECT_FOR_INIT_EPS = {";"}
+_SELECT_FOR_COND_EPS = {";"}
+_SELECT_FOR_ITER_EPS = {")"}
+
+
+class _DeferredEmitter:
+    """把 emit 的四元式先缓存在本地，稍后再一次性写回父 emitter。
+
+    用途：for(cond/iter) 这两段在语法上出现在括号里，但中间代码应在
+    label(L_begin) 之后/循环体之后再执行。
+    """
+
+    def __init__(self, parent: TACEmitter) -> None:
+        self._parent = parent
+        self.quads: List[Quad] = []
+        self.trace: List[str] = []
+
+    def new_temp(self) -> str:
+        return self._parent.new_temp()
+
+    def new_label(self) -> str:
+        return self._parent.new_label()
+
+    def emit(self, op: str, arg1: str = "", arg2: str = "", result: str = "") -> None:
+        q = Quad(op=op, arg1=arg1, arg2=arg2, result=result)
+        self.quads.append(q)
+        self.trace.append(q.format_three_address())
+
+    def emit_label(self, label: str) -> None:
+        self.emit("label", result=label)
+
+    def emit_goto(self, label: str) -> None:
+        self.emit("goto", result=label)
+
+    def emit_if_false(self, cond_place: str, label: str) -> None:
+        self.emit("ifFalse", arg1=cond_place, result=label)
+
+    def flush_to_parent(self) -> None:
+        self._parent.quads.extend(self.quads)
+        self._parent.trace.extend(self.trace)
+        self.quads.clear()
+        self.trace.clear()
 
 
 @dataclass(frozen=True)
@@ -58,6 +114,10 @@ class RDParser:
     # ---------------- trace helpers ----------------
     def _log(self, msg: str) -> None:
         self.parse_trace.append("  " * self._indent + msg)
+
+    def _prod(self, lhs: str, rhs: str) -> None:
+        # “教材风格”：记录选用的产生式
+        self._log(f"使用产生式: {lhs} -> {rhs}")
 
     def _enter(self, name: str) -> None:
         self._log(f"进入 <{name}>")
@@ -321,29 +381,47 @@ class RDParser:
         self._enter("Stmt")
         tok = self._peek()
         try:
-            if tok.terminal == "for":
+            if tok.terminal in _SELECT_STMT_FOR:
+                self._prod("Stmt", "ForStmt")
                 self._for_stmt()
-            elif tok.terminal == "{":
+            elif tok.terminal in _SELECT_STMT_BLOCK:
+                self._prod("Stmt", "Block")
                 self._block()
-            elif tok.terminal in _TYPE_KEYWORDS:
+            elif tok.terminal in _SELECT_STMT_DECL:
                 # 声明语句
+                self._prod("Stmt", "DeclStmt ;")
                 self._decl_stmt(require_semicolon=True)
-            elif tok.terminal == ";":
+            elif tok.terminal in _SELECT_STMT_EMPTY:
+                self._prod("Stmt", ";")
                 self._expect(";")
-            elif tok.terminal == "IDENT":
-                if self.s.peek(1).terminal in {"++", "--"}:
-                    # 自增自减语句
+            elif tok.terminal in _SELECT_STMT_PREFIX_INCDEC:
+                # 自增自减语句（前缀）
+                self._prod("Stmt", "IncDec ;")
+                self._incdec(require_semicolon=True)
+            elif tok.terminal in _SELECT_STMT_IDENT:
+                # IDENT 开头：通过 lookahead 选择 IncDec / Assign
+                la2 = self.s.peek(1).terminal
+                if la2 in {"++", "--"}:
+                    self._prod("Stmt", "IncDec ;")
                     self._incdec(require_semicolon=True)
-                else:
-                    # 赋值语句
+                elif la2 in _ASSIGN_OPS:
+                    self._prod("Stmt", "AssignStmt ;")
                     self._assign_stmt(require_semicolon=True)
+                else:
+                    raise ParseError(
+                        message="IDENT 起始语句缺少 ++/-- 或赋值运算符",
+                        line=tok.line,
+                        column=tok.column,
+                        got=la2,
+                        expected=sorted(list(_ASSIGN_OPS | {"++", "--"})),
+                    )
             else:
                 raise ParseError(
                     message="无法识别的语句起始符",
                     line=tok.line,
                     column=tok.column,
                     got=tok.terminal,
-                    expected=["for", "{", ";", "IDENT"] + sorted(_TYPE_KEYWORDS),
+                    expected=["for", "{", ";", "IDENT", "++", "--"] + sorted(_TYPE_KEYWORDS),
                 )
         except ParseError as e:
             self.errors.append(e)
@@ -364,84 +442,136 @@ class RDParser:
 
     def _for_stmt(self) -> None:
         self._enter("ForStmt")
+        self._prod("ForStmt", "for ( ForInitOpt ; ForCondOpt ; ForIterOpt ) Stmt")
         self._expect("for")
         self._expect("(")
 
-        # init
+        # init: ForInitOpt
         if self._peek().terminal in _TYPE_KEYWORDS:
+            self._prod("ForInitOpt", "DeclStmt")
             self._decl_stmt(require_semicolon=False)
         elif self._peek().terminal == "IDENT":
-            # assign or inc/dec
-            if self.s.peek(1).terminal in {"++", "--"}:
+            la2 = self.s.peek(1).terminal
+            if la2 in {"++", "--"}:
+                self._prod("ForInitOpt", "IncDec")
                 self._incdec(require_semicolon=False)
-            else:
+            elif la2 in _ASSIGN_OPS:
+                self._prod("ForInitOpt", "AssignStmt")
                 self._assign_stmt(require_semicolon=False)
-        # else epsilon
+            else:
+                raise ParseError(
+                    message="for-init: IDENT 后缺少 ++/-- 或赋值运算符",
+                    line=self._peek().line,
+                    column=self._peek().column,
+                    got=la2,
+                    expected=sorted(list(_ASSIGN_OPS | {"++", "--"})),
+                )
+        elif self._peek().terminal in _SELECT_STMT_PREFIX_INCDEC:
+            self._prod("ForInitOpt", "IncDec")
+            self._incdec(require_semicolon=False)
+        elif self._peek().terminal in _SELECT_FOR_INIT_EPS:
+            self._prod("ForInitOpt", "ε")
+        else:
+            raise ParseError(
+                message="for-init: 不支持的起始符",
+                line=self._peek().line,
+                column=self._peek().column,
+                got=self._peek().terminal,
+                expected=sorted(list(_TYPE_KEYWORDS | {"IDENT", "++", "--", ";"})),
+            )
         self._expect(";")
 
-        # cond
-        # 条件可选
-        cond_tokens: List[SyntaxToken] = []
-        if self._peek().terminal != ";":
-            while self._peek().terminal not in {";", "EOF"}:
-                cond_tokens.append(self.s.advance())
+        # cond: ForCondOpt（先解析并缓冲，等 L_begin 之后再 flush）
+        cond_place: Optional[str] = None
+        cond_buf = _DeferredEmitter(self.emitter)
+        if self._peek().terminal in _FIRST_EXPR:
+            self._prod("ForCondOpt", "Expr")
+            saved = self.emitter
+            self.emitter = cond_buf
+            try:
+                cond_place = self._expr()
+            finally:
+                self.emitter = saved
+        elif self._peek().terminal in _SELECT_FOR_COND_EPS:
+            self._prod("ForCondOpt", "ε")
+        else:
+            raise ParseError(
+                message="for-cond: 不支持的起始符",
+                line=self._peek().line,
+                column=self._peek().column,
+                got=self._peek().terminal,
+                expected=sorted(list(_FIRST_EXPR | {";"})),
+            )
         self._expect(";")
 
-        # iter
-        # 我们先“记住”迭代表达式的位置，等 body 解析完再回来生成 iter 的代码。
-        iter_tokens: List[SyntaxToken] = []
-        if self._peek().terminal != ")":
-            while self._peek().terminal not in {")", "EOF"}:
-                iter_tokens.append(self.s.advance())
+        # iter: ForIterOpt（先解析并缓冲，等循环体之后再 flush）
+        iter_buf = _DeferredEmitter(self.emitter)
+        if self._peek().terminal == "IDENT":
+            la2 = self.s.peek(1).terminal
+            self._prod("ForIterOpt", "AssignStmt | IncDec")
+            saved = self.emitter
+            self.emitter = iter_buf
+            try:
+                if la2 in {"++", "--"}:
+                    self._incdec(require_semicolon=False)
+                elif la2 in _ASSIGN_OPS:
+                    self._assign_stmt(require_semicolon=False)
+                else:
+                    raise ParseError(
+                        message="for-iter: IDENT 后缺少 ++/-- 或赋值运算符",
+                        line=self._peek().line,
+                        column=self._peek().column,
+                        got=la2,
+                        expected=sorted(list(_ASSIGN_OPS | {"++", "--"})),
+                    )
+            finally:
+                self.emitter = saved
+        elif self._peek().terminal in _SELECT_STMT_PREFIX_INCDEC:
+            self._prod("ForIterOpt", "IncDec")
+            saved = self.emitter
+            self.emitter = iter_buf
+            try:
+                self._incdec(require_semicolon=False)
+            finally:
+                self.emitter = saved
+        elif self._peek().terminal in _SELECT_FOR_ITER_EPS:
+            self._prod("ForIterOpt", "ε")
+        else:
+            raise ParseError(
+                message="for-iter: 不支持的起始符",
+                line=self._peek().line,
+                column=self._peek().column,
+                got=self._peek().terminal,
+                expected=sorted(list({"IDENT", "++", "--", ")"})),
+            )
         self._expect(")")
 
         # codegen skeleton
         L_begin = self.emitter.new_label()
-        L_end = self.emitter.new_label()
 
         # begin
         self.emitter.emit_label(L_begin)
 
+        # 拉链回填：先生成“跳转目标未知”的 ifFalse，等循环结束标签出现后再回填
+        falselist: List[int] = []
+
         # cond: 每轮循环都在 L_begin 后重新计算条件
-        if cond_tokens:
-            last = cond_tokens[-1]
-            eof_tok = SyntaxToken(
-                terminal="EOF",
-                lexeme="",
-                line=last.line,
-                column=last.column + max(1, len(last.lexeme)),
-                raw_type="EOF",
-            )
-            tmp_stream = TokenStream(cond_tokens + [eof_tok])
-            cond_parser = RDParser(tmp_stream)
-            cond_parser.emitter = self.emitter  # 共享 emitter
-            cond_place = cond_parser._expr()
-            self.emitter.emit_if_false(cond_place, L_end)
+        if cond_place is not None:
+            cond_buf.flush_to_parent()
+            falselist.append(self.emitter.emit_if_false_placeholder(cond_place))
 
         # body
         self._stmt()
-        
-        # 这里没看
 
-        # iter: 回到 iter 片段重新解析并生成代码
-        if iter_tokens:
-            saved_i = self.s.index()
-            # 构造临时 stream 解析 iter
-            tmp_stream = TokenStream(iter_tokens + [SyntaxToken("EOF", "", iter_tokens[-1].line, iter_tokens[-1].column, "EOF")])
-            iter_parser = RDParser(tmp_stream)
-            iter_parser.emitter = self.emitter  # 共享 emitter
-            # 只允许 IncDec 或 AssignExpr
-            if tmp_stream.peek().terminal == "IDENT" and tmp_stream.peek(1).terminal in {"++", "--"}:
-                iter_parser._incdec(require_semicolon=False)
-            elif tmp_stream.peek().terminal == "IDENT":
-                iter_parser._assign_stmt(require_semicolon=False)
-            elif tmp_stream.peek().terminal in {"++", "--"}:
-                iter_parser._incdec(require_semicolon=False)
-            # 忽略 iter_parser 的 parse_trace/errors（iter 语法错会在主流程暴露为不支持）
-            self.s.set_index(saved_i)
+        # iter: 循环体之后再执行迭代表达式
+        iter_buf.flush_to_parent()
 
         self.emitter.emit_goto(L_begin)
+
+        L_end = self.emitter.new_label()
         self.emitter.emit_label(L_end)
+        if falselist:
+            self.emitter.backpatch(falselist, L_end)
 
         self._leave("ForStmt")
 
@@ -556,7 +686,7 @@ class RDParser:
 
     def _unary(self) -> str:
         self._enter("Unary")
-        if self._peek().terminal in {"+", "-", "!"}:
+        if self._peek().terminal in _UNARY_PREFIX_OPS:
             op = self.s.advance().terminal
             x = self._unary()
             # 一元 + 直接返回；- 与 ! 生成临时

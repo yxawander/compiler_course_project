@@ -5,7 +5,10 @@
 进入 <Program>
   进入 <StmtList>
     进入 <Stmt>
+      使用产生式: Stmt -> ForStmt
       进入 <ForStmt>
+        使用产生式: ForStmt -> for ( ForInitOpt ; ForCondOpt ; ForIterOpt ) Stmt
+        使用产生式: ForInitOpt -> DeclStmt
         进入 <DeclStmt>
           match int (int)
           match = (=)
@@ -21,10 +24,37 @@
             退出 <AddExpr>
           退出 <Expr>
         退出 <DeclStmt>
+        使用产生式: ForCondOpt -> Expr
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match IDENT (i)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match IDENT (n)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+        使用产生式: ForIterOpt -> AssignStmt | IncDec
+        进入 <IncDec>
+          match ++ (++)
+        退出 <IncDec>
         进入 <Stmt>
+          使用产生式: Stmt -> Block
           进入 <Block>
             进入 <StmtList>
               进入 <Stmt>
+                使用产生式: Stmt -> AssignStmt ;
                 进入 <AssignStmt>
                   进入 <AssignExpr>
                     match = (=)
@@ -79,9 +109,9 @@ i = 0
 L1:
 t1 = i < n
 ifFalse t1 goto L2
-t2 = x + i
-x = t2
-t3 = i + 1
-i = t3
+t3 = x + i
+x = t3
+t2 = i + 1
+i = t2
 goto L1
 L2:

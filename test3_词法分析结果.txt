@@ -1,0 +1,144 @@
+========================================
+          词法分析结果报告
+========================================
+源文件: test3.txt
+========================================
+
+行   1, 列  1 | KEYWORD         | int
+行   1, 列  5 | IDENTIFIER      | n
+行   1, 列  6 | DELIMITER       | ;
+────────────────────────────────────────
+行   2, 列  1 | KEYWORD         | int
+行   2, 列  5 | IDENTIFIER      | m
+行   2, 列  6 | DELIMITER       | ;
+────────────────────────────────────────
+行   3, 列  1 | KEYWORD         | int
+行   3, 列  5 | IDENTIFIER      | x
+行   3, 列  6 | DELIMITER       | ;
+────────────────────────────────────────
+行   4, 列  1 | KEYWORD         | int
+行   4, 列  5 | IDENTIFIER      | y
+行   4, 列  6 | DELIMITER       | ;
+────────────────────────────────────────
+行   5, 列  1 | KEYWORD         | int
+行   5, 列  5 | IDENTIFIER      | z
+行   5, 列  6 | DELIMITER       | ;
+────────────────────────────────────────
+行   7, 列  1 | IDENTIFIER      | n
+行   7, 列  3 | OPERATOR        | =
+行   7, 列  5 | INTEGER         | 17
+行   7, 列  7 | DELIMITER       | ;
+────────────────────────────────────────
+行   8, 列  1 | IDENTIFIER      | m
+行   8, 列  3 | OPERATOR        | =
+行   8, 列  5 | INTEGER         | 5
+行   8, 列  6 | DELIMITER       | ;
+────────────────────────────────────────
+行   9, 列  1 | IDENTIFIER      | x
+行   9, 列  3 | OPERATOR        | =
+行   9, 列  5 | INTEGER         | 3
+行   9, 列  6 | DELIMITER       | ;
+────────────────────────────────────────
+行  10, 列  1 | IDENTIFIER      | y
+行  10, 列  3 | OPERATOR        | =
+行  10, 列  5 | INTEGER         | 9
+行  10, 列  6 | DELIMITER       | ;
+────────────────────────────────────────
+行  11, 列  1 | IDENTIFIER      | z
+行  11, 列  3 | OPERATOR        | =
+行  11, 列  5 | INTEGER         | 12
+行  11, 列  7 | DELIMITER       | ;
+────────────────────────────────────────
+行  13, 列  1 | KEYWORD         | for
+行  13, 列  5 | DELIMITER       | (
+行  13, 列  6 | KEYWORD         | int
+行  13, 列 10 | IDENTIFIER      | i
+行  13, 列 12 | OPERATOR        | =
+行  13, 列 14 | INTEGER         | 0
+行  13, 列 15 | DELIMITER       | ;
+行  13, 列 17 | DELIMITER       | (
+行  13, 列 19 | DELIMITER       | (
+行  13, 列 20 | IDENTIFIER      | i
+行  13, 列 22 | OPERATOR        | +
+行  13, 列 24 | INTEGER         | 1
+行  13, 列 25 | DELIMITER       | )
+行  13, 列 27 | OPERATOR        | *
+行  13, 列 29 | DELIMITER       | (
+行  13, 列 30 | IDENTIFIER      | i
+行  13, 列 32 | OPERATOR        | -
+行  13, 列 34 | INTEGER         | 2
+行  13, 列 35 | DELIMITER       | )
+行  13, 列 37 | OPERATOR        | <
+行  13, 列 39 | DELIMITER       | (
+行  13, 列 40 | IDENTIFIER      | n
+行  13, 列 42 | OPERATOR        | +
+行  13, 列 44 | INTEGER         | 2
+行  13, 列 46 | OPERATOR        | *
+行  13, 列 48 | IDENTIFIER      | m
+行  13, 列 49 | DELIMITER       | )
+行  13, 列 51 | DELIMITER       | )
+行  13, 列 53 | OPERATOR        | !=
+行  13, 列 56 | DELIMITER       | (
+行  13, 列 58 | DELIMITER       | (
+行  13, 列 59 | IDENTIFIER      | x
+行  13, 列 61 | OPERATOR        | -
+行  13, 列 63 | IDENTIFIER      | y
+行  13, 列 64 | DELIMITER       | )
+行  13, 列 66 | OPERATOR        | <=
+行  13, 列 69 | DELIMITER       | (
+行  13, 列 70 | IDENTIFIER      | z
+行  13, 列 72 | OPERATOR        | +
+行  13, 列 74 | IDENTIFIER      | i
+行  13, 列 75 | DELIMITER       | )
+行  13, 列 77 | DELIMITER       | )
+行  13, 列 78 | DELIMITER       | ;
+行  13, 列 80 | IDENTIFIER      | i
+行  13, 列 82 | OPERATOR        | +=
+行  13, 列 85 | INTEGER         | 2
+行  13, 列 86 | DELIMITER       | )
+行  13, 列 88 | DELIMITER       | {
+────────────────────────────────────────
+行  14, 列  5 | IDENTIFIER      | x
+行  14, 列  7 | OPERATOR        | =
+行  14, 列  9 | IDENTIFIER      | x
+行  14, 列 11 | OPERATOR        | +
+行  14, 列 13 | DELIMITER       | (
+行  14, 列 14 | IDENTIFIER      | i
+行  14, 列 16 | OPERATOR        | *
+行  14, 列 18 | DELIMITER       | (
+行  14, 列 19 | IDENTIFIER      | m
+行  14, 列 21 | OPERATOR        | -
+行  14, 列 23 | INTEGER         | 1
+行  14, 列 24 | DELIMITER       | )
+行  14, 列 25 | DELIMITER       | )
+行  14, 列 26 | DELIMITER       | ;
+────────────────────────────────────────
+行  15, 列  5 | IDENTIFIER      | y
+行  15, 列  7 | OPERATOR        | -=
+行  15, 列 10 | DELIMITER       | (
+行  15, 列 11 | IDENTIFIER      | x
+行  15, 列 13 | OPERATOR        | +
+行  15, 列 15 | IDENTIFIER      | i
+行  15, 列 16 | DELIMITER       | )
+行  15, 列 17 | DELIMITER       | ;
+────────────────────────────────────────
+行  16, 列  1 | DELIMITER       | }
+────────────────────────────────────────
+
+========================================
+             统计信息
+========================================
+总Token数:          106
+────────────────────────────────────────
+关键字:               7
+标识符:              27
+整数:                11
+小数:                 0
+运算符:              23
+分隔符:              38
+字符串:               0
+────────────────────────────────────────
+错误Token:            0
+错误率:            0.00%
+========================================
+分析完成。

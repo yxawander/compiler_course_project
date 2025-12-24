@@ -1,0 +1,561 @@
+========================================
+        递归下降解析日志
+========================================
+
+进入 <Program>
+  进入 <StmtList>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: (AssignStmt) -> IDENT AssignOp Expr
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (17)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <AssignExpr>
+
+【赋值语句分析表】n=17;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            n             n=17;
+Expr -> Term ExprP          n=              17            17;
+Term -> Factor TermP        n=              17            17;
+Factor -> num               n=              17            17;
+TermP -> ε                  n=17            ;             ;
+ExprP -> ε                  n=17            ;             ;
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: (AssignStmt) -> IDENT AssignOp Expr
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (5)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <AssignExpr>
+
+【赋值语句分析表】m=5;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            m             m=5;
+Expr -> Term ExprP          m=              5             5;
+Term -> Factor TermP        m=              5             5;
+Factor -> num               m=              5             5;
+TermP -> ε                  m=5             ;             ;
+ExprP -> ε                  m=5             ;             ;
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: (AssignStmt) -> IDENT AssignOp Expr
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (3)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <AssignExpr>
+
+【赋值语句分析表】x=3;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            x             x=3;
+Expr -> Term ExprP          x=              3             3;
+Term -> Factor TermP        x=              3             3;
+Factor -> num               x=              3             3;
+TermP -> ε                  x=3             ;             ;
+ExprP -> ε                  x=3             ;             ;
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: (AssignStmt) -> IDENT AssignOp Expr
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (9)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <AssignExpr>
+
+【赋值语句分析表】y=9;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            y             y=9;
+Expr -> Term ExprP          y=              9             9;
+Term -> Factor TermP        y=              9             9;
+Factor -> num               y=              9             9;
+TermP -> ε                  y=9             ;             ;
+ExprP -> ε                  y=9             ;             ;
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: (AssignStmt) -> IDENT AssignOp Expr
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (12)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <AssignExpr>
+
+【赋值语句分析表】z=12;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            z             z=12;
+Expr -> Term ExprP          z=              12            12;
+Term -> Factor TermP        z=              12            12;
+Factor -> num               z=              12            12;
+TermP -> ε                  z=12            ;             ;
+ExprP -> ε                  z=12            ;             ;
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> ForStmt
+      进入 <ForStmt>
+        使用产生式: ForStmt -> for ( ForInitOpt ; ForCondOpt ; ForIterOpt ) Stmt
+        使用产生式: ForInitOpt -> DeclStmt
+        进入 <DeclStmt>
+          match int (int)
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (0)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <DeclStmt>
+        使用产生式: ForCondOpt -> Expr
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  进入 <Expr>
+                    进入 <AddExpr>
+                      进入 <MulExpr>
+                        进入 <Unary>
+                          进入 <Primary>
+                            进入 <Expr>
+                              进入 <AddExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match IDENT (i)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match NUM (1)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                              退出 <AddExpr>
+                            退出 <Expr>
+                          退出 <Primary>
+                        退出 <Unary>
+                        进入 <Unary>
+                          进入 <Primary>
+                            进入 <Expr>
+                              进入 <AddExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match IDENT (i)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match NUM (2)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                              退出 <AddExpr>
+                            退出 <Expr>
+                          退出 <Primary>
+                        退出 <Unary>
+                      退出 <MulExpr>
+                    退出 <AddExpr>
+                    进入 <AddExpr>
+                      进入 <MulExpr>
+                        进入 <Unary>
+                          进入 <Primary>
+                            进入 <Expr>
+                              进入 <AddExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match IDENT (n)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match NUM (2)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match IDENT (m)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                              退出 <AddExpr>
+                            退出 <Expr>
+                          退出 <Primary>
+                        退出 <Unary>
+                      退出 <MulExpr>
+                    退出 <AddExpr>
+                  退出 <Expr>
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  进入 <Expr>
+                    进入 <AddExpr>
+                      进入 <MulExpr>
+                        进入 <Unary>
+                          进入 <Primary>
+                            进入 <Expr>
+                              进入 <AddExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match IDENT (x)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match IDENT (y)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                              退出 <AddExpr>
+                            退出 <Expr>
+                          退出 <Primary>
+                        退出 <Unary>
+                      退出 <MulExpr>
+                    退出 <AddExpr>
+                    进入 <AddExpr>
+                      进入 <MulExpr>
+                        进入 <Unary>
+                          进入 <Primary>
+                            进入 <Expr>
+                              进入 <AddExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match IDENT (z)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match IDENT (i)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                              退出 <AddExpr>
+                            退出 <Expr>
+                          退出 <Primary>
+                        退出 <Unary>
+                      退出 <MulExpr>
+                    退出 <AddExpr>
+                  退出 <Expr>
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+        使用产生式: ForIterOpt -> AssignStmt | IncDec
+        使用产生式: (AssignStmt) -> IDENT AssignOp Expr
+        进入 <AssignStmt>
+          进入 <AssignExpr>
+            match += (+=)
+            进入 <Expr>
+              进入 <AddExpr>
+                进入 <MulExpr>
+                  进入 <Unary>
+                    进入 <Primary>
+                      match NUM (2)
+                    退出 <Primary>
+                  退出 <Unary>
+                退出 <MulExpr>
+              退出 <AddExpr>
+            退出 <Expr>
+          退出 <AssignExpr>
+        退出 <AssignStmt>
+        进入 <Stmt>
+          使用产生式: Stmt -> Block
+          进入 <Block>
+            进入 <StmtList>
+              进入 <Stmt>
+                使用产生式: (AssignStmt) -> IDENT AssignOp Expr
+                进入 <AssignStmt>
+                  进入 <AssignExpr>
+                    match = (=)
+                    进入 <Expr>
+                      进入 <AddExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              match IDENT (x)
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              进入 <Expr>
+                                进入 <AddExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (i)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        进入 <Expr>
+                                          进入 <AddExpr>
+                                            进入 <MulExpr>
+                                              进入 <Unary>
+                                                进入 <Primary>
+                                                  match IDENT (m)
+                                                退出 <Primary>
+                                              退出 <Unary>
+                                            退出 <MulExpr>
+                                            进入 <MulExpr>
+                                              进入 <Unary>
+                                                进入 <Primary>
+                                                  match NUM (1)
+                                                退出 <Primary>
+                                              退出 <Unary>
+                                            退出 <MulExpr>
+                                          退出 <AddExpr>
+                                        退出 <Expr>
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                退出 <AddExpr>
+                              退出 <Expr>
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                      退出 <AddExpr>
+                    退出 <Expr>
+                  退出 <AssignExpr>
+
+【赋值语句分析表】x=x+(i*(m-1));
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            x             x=x+(i*(m-1));
+Expr -> Term ExprP          x=              x             x+(i*(m-1));
+Term -> Factor TermP        x=              x             x+(i*(m-1));
+Factor -> id                x=              x             x+(i*(m-1));
+TermP -> ε                  x=x             +             +(i*(m-1));
+ExprP -> + Term ExprP       x=x             +             +(i*(m-1));
+Term -> Factor TermP        x=x+            (             (i*(m-1));
+Factor -> ( Expr )          x=x+            (             (i*(m-1));
+Expr -> Term ExprP          x=x+(           i             i*(m-1));
+Term -> Factor TermP        x=x+(           i             i*(m-1));
+Factor -> id                x=x+(           i             i*(m-1));
+TermP -> * Factor TermP      x=x+(i          *             *(m-1));
+Factor -> ( Expr )          x=x+(i*         (             (m-1));
+Expr -> Term ExprP          x=x+(i*(        m             m-1));
+Term -> Factor TermP        x=x+(i*(        m             m-1));
+Factor -> id                x=x+(i*(        m             m-1));
+TermP -> ε                  x=x+(i*(m       -             -1));
+ExprP -> - Term ExprP       x=x+(i*(m       -             -1));
+Term -> Factor TermP        x=x+(i*(m-      1             1));
+Factor -> num               x=x+(i*(m-      1             1));
+TermP -> ε                  x=x+(i*(m-1      )             ));
+ExprP -> ε                  x=x+(i*(m-1      )             ));
+TermP -> ε                  x=x+(i*(m-1)      )             );
+ExprP -> ε                  x=x+(i*(m-1)      )             );
+TermP -> ε                  x=x+(i*(m-1))      ;             ;
+ExprP -> ε                  x=x+(i*(m-1))      ;             ;
+
+                退出 <AssignStmt>
+              退出 <Stmt>
+              进入 <Stmt>
+                使用产生式: (AssignStmt) -> IDENT AssignOp Expr
+                进入 <AssignStmt>
+                  进入 <AssignExpr>
+                    match -= (-=)
+                    进入 <Expr>
+                      进入 <AddExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              进入 <Expr>
+                                进入 <AddExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (x)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (i)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                退出 <AddExpr>
+                              退出 <Expr>
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                      退出 <AddExpr>
+                    退出 <Expr>
+                  退出 <AssignExpr>
+
+【赋值语句分析表】y-=(x+i);
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id -= Expr ;                           y             y-=(x+i);
+Expr -> Term ExprP          y-=             (             (x+i);
+Term -> Factor TermP        y-=             (             (x+i);
+Factor -> ( Expr )          y-=             (             (x+i);
+Expr -> Term ExprP          y-=(            x             x+i);
+Term -> Factor TermP        y-=(            x             x+i);
+Factor -> id                y-=(            x             x+i);
+TermP -> ε                  y-=(x           +             +i);
+ExprP -> + Term ExprP       y-=(x           +             +i);
+Term -> Factor TermP        y-=(x+          i             i);
+Factor -> id                y-=(x+          i             i);
+TermP -> ε                  y-=(x+i         )             );
+ExprP -> ε                  y-=(x+i         )             );
+TermP -> ε                  y-=(x+i)        ;             ;
+ExprP -> ε                  y-=(x+i)        ;             ;
+
+                退出 <AssignStmt>
+              退出 <Stmt>
+            退出 <StmtList>
+          退出 <Block>
+        退出 <Stmt>
+      退出 <ForStmt>
+    退出 <Stmt>
+  退出 <StmtList>
+退出 <Program>
+
+========================================
+      语义/中间代码生成日志
+========================================
+
+n = 17
+m = 5
+x = 3
+y = 9
+z = 12
+i = 0
+L1:
+t1 = i + 1
+t2 = i - 2
+t3 = t1 * t2
+t4 = 2 * m
+t5 = n + t4
+t6 = t3 < t5
+t7 = x - y
+t8 = z + i
+t9 = t7 <= t8
+t10 = t6 != t9
+ifFalse t10 goto L2
+t12 = m - 1
+t13 = i * t12
+t14 = x + t13
+x = t14
+t15 = x + i
+t16 = y - t15
+y = t16
+t11 = i + 2
+i = t11
+goto L1
+L2:

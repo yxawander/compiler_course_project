@@ -169,19 +169,19 @@ ExprP -> ε                  x=x+i*j         ;             ;
 i = 0
 L1:
 t1 = i < n
-ifFalse t1 goto L4
+ifFalse t1 goto L2
 j = 0
-L2:
+L3:
 t3 = j < m
-ifFalse t3 goto L3
+ifFalse t3 goto L4
 t5 = i * j
 t6 = x + t5
 x = t6
 t4 = j + 1
 j = t4
-goto L2
-L3:
+goto L3
+L4:
 t2 = i + 1
 i = t2
 goto L1
-L4:
+L2:

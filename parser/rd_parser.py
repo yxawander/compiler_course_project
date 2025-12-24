@@ -7,6 +7,8 @@ from parser.errors import ParseError
 from parser.stream import SyntaxToken, TokenStream
 from parser.tac import Quad, TACEmitter
 
+from parser.ll1_sets import build_default_ll1_sets
+
 
 _TYPE_KEYWORDS = {"int", "float", "double", "char"}
 _REL_OPS = {"<", "<=", ">", ">=", "==", "!="}
@@ -15,21 +17,33 @@ _MUL_OPS = {"*", "/"}
 _ASSIGN_OPS = {"=", "+=", "-=", "*=", "/="}
 _UNARY_PREFIX_OPS = {"+", "-", "!"}
 
+# --- LL(1) FIRST/FOLLOW/SELECT（自动计算） ---
+_LL1 = build_default_ll1_sets()
+
+
+def _select(lhs: str, rhs: Tuple[str, ...]) -> Set[str]:
+    # 返回可变集合，便于调用方与其他 set 做并集等操作
+    return set(_LL1.select[(lhs, rhs)])
+
+
+def _first(nt: str) -> Set[str]:
+    return set(_LL1.first[nt])
+
+
 # FIRST 集合（用于 SELECT 集合判定）
-_FIRST_PRIMARY = {"IDENT", "NUM", "("}
-_FIRST_EXPR = set(_FIRST_PRIMARY) | set(_UNARY_PREFIX_OPS)
+_FIRST_EXPR = _first("Expr")
 
 # SELECT 集合（用于按 1 个 lookahead 选择产生式）
-_SELECT_STMT_FOR = {"for"}
-_SELECT_STMT_BLOCK = {"{"}
-_SELECT_STMT_DECL = set(_TYPE_KEYWORDS)
-_SELECT_STMT_EMPTY = {";"}
-_SELECT_STMT_PREFIX_INCDEC = {"++", "--"}
-_SELECT_STMT_IDENT = {"IDENT"}
+_SELECT_STMT_FOR = _select("Stmt", ("ForStmt",))
+_SELECT_STMT_BLOCK = _select("Stmt", ("Block",))
+_SELECT_STMT_DECL = _select("Stmt", ("DeclStmt", ";"))
+_SELECT_STMT_EMPTY = _select("Stmt", (";",))
+_SELECT_STMT_PREFIX_INCDEC = _select("Stmt", ("PrefixIncDec", ";"))
+_SELECT_STMT_IDENT = _select("Stmt", ("IDENT", "IdStmtTail", ";"))
 
-_SELECT_FOR_INIT_EPS = {";"}
-_SELECT_FOR_COND_EPS = {";"}
-_SELECT_FOR_ITER_EPS = {")"}
+_SELECT_FOR_INIT_EPS = _select("ForInitOpt", ())
+_SELECT_FOR_COND_EPS = _select("ForCondOpt", ())
+_SELECT_FOR_ITER_EPS = _select("ForIterOpt", ())
 
 
 class _DeferredEmitter:

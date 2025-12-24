@@ -14,6 +14,7 @@ if str(_ROOT_DIR) not in sys.path:
 from lexer.dfa_lexer import DFALexer
 from lexer.token import Token
 from parser.rd_parser import RDParser
+from parser.ll1_sets import build_default_ll1_sets, format_ll1_sets
 from parser.stream import TokenStream, normalize_tokens
 
 
@@ -113,6 +114,11 @@ def get_tac_output_file_path(source_file: Path) -> Path:
 def get_rd_parser_log_file_path(source_file: Path) -> Path:
     base = source_file.stem
     return source_file.with_name(f"{base}_递归下降日志.txt")
+
+
+def get_ll1_sets_output_file_path(source_file: Path) -> Path:
+    base = source_file.stem
+    return source_file.with_name(f"{base}_FIRST_FOLLOW_SELECT.txt")
 
 
 def format_lexeme_for_display(lexeme: Optional[str]) -> str:
@@ -358,6 +364,15 @@ def main(argv: List[str]) -> int:
         print(f"三地址码/四元式已保存到: {tac_report_path.resolve()}")
     except Exception as e:
         print(f"保存三地址码/四元式失败: {e}")
+
+    # 导出 LL(1) FIRST/FOLLOW/SELECT
+    ll1_sets_path = get_ll1_sets_output_file_path(source_file)
+    try:
+        ll1_text = format_ll1_sets(build_default_ll1_sets())
+        ll1_sets_path.write_text(ll1_text, encoding="utf-8")
+        print(f"FIRST/FOLLOW/SELECT 已保存到: {ll1_sets_path.resolve()}")
+    except Exception as e:
+        print(f"保存 FIRST/FOLLOW/SELECT 失败: {e}")
 
     if result.errors:
         print(f"⚠ 语法错误数: {len(result.errors)}（请根据控制台报错定位）")

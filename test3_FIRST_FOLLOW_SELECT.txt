@@ -1,0 +1,131 @@
+========================================
+     LL(1) FIRST / FOLLOW / SELECT
+========================================
+
+[FIRST]
+FIRST(AddExpr) = { !, (, +, -, IDENT, NUM }
+FIRST(AddOp) = { +, - }
+FIRST(AddTail) = { +, -, ε }
+FIRST(AssignOp) = { *=, +=, -=, /=, = }
+FIRST(Block) = { { }
+FIRST(DeclInitOpt) = { =, ε }
+FIRST(DeclStmt) = { char, double, float, int }
+FIRST(Expr) = { !, (, +, -, IDENT, NUM }
+FIRST(ForCondOpt) = { !, (, +, -, IDENT, NUM, ε }
+FIRST(ForIdTail) = { *=, ++, +=, --, -=, /=, = }
+FIRST(ForInitOpt) = { ++, --, IDENT, char, double, float, int, ε }
+FIRST(ForIterOpt) = { ++, --, IDENT, ε }
+FIRST(ForStmt) = { for }
+FIRST(IdStmtTail) = { *=, ++, +=, --, -=, /=, = }
+FIRST(IncDecOp) = { ++, -- }
+FIRST(MulExpr) = { !, (, +, -, IDENT, NUM }
+FIRST(MulOp) = { *, / }
+FIRST(MulTail) = { *, /, ε }
+FIRST(PrefixIncDec) = { ++, -- }
+FIRST(Primary) = { (, IDENT, NUM }
+FIRST(Program) = { ++, --, ;, EOF, IDENT, char, double, float, for, int, { }
+FIRST(RelOp) = { !=, <, <=, ==, >, >= }
+FIRST(RelTail) = { !=, <, <=, ==, >, >=, ε }
+FIRST(Stmt) = { ++, --, ;, IDENT, char, double, float, for, int, { }
+FIRST(StmtList) = { ++, --, ;, IDENT, char, double, float, for, int, {, ε }
+FIRST(Type) = { char, double, float, int }
+FIRST(Unary) = { !, (, +, -, IDENT, NUM }
+FIRST(UnaryOp) = { !, +, - }
+
+[FOLLOW]
+FOLLOW(AddExpr) = { !=, ), ;, <, <=, ==, >, >= }
+FOLLOW(AddOp) = { !, (, +, -, IDENT, NUM }
+FOLLOW(AddTail) = { !=, ), ;, <, <=, ==, >, >= }
+FOLLOW(AssignOp) = { !, (, +, -, IDENT, NUM }
+FOLLOW(Block) = { ++, --, ;, EOF, IDENT, char, double, float, for, int, {, } }
+FOLLOW(DeclInitOpt) = { ; }
+FOLLOW(DeclStmt) = { ; }
+FOLLOW(Expr) = { ), ; }
+FOLLOW(ForCondOpt) = { ; }
+FOLLOW(ForIdTail) = { ), ; }
+FOLLOW(ForInitOpt) = { ; }
+FOLLOW(ForIterOpt) = { ) }
+FOLLOW(ForStmt) = { ++, --, ;, EOF, IDENT, char, double, float, for, int, {, } }
+FOLLOW(IdStmtTail) = { ; }
+FOLLOW(IncDecOp) = { ), ;, IDENT }
+FOLLOW(MulExpr) = { !=, ), +, -, ;, <, <=, ==, >, >= }
+FOLLOW(MulOp) = { !, (, +, -, IDENT, NUM }
+FOLLOW(MulTail) = { !=, ), +, -, ;, <, <=, ==, >, >= }
+FOLLOW(PrefixIncDec) = { ), ; }
+FOLLOW(Primary) = { !=, ), *, +, -, /, ;, <, <=, ==, >, >= }
+FOLLOW(Program) = { EOF }
+FOLLOW(RelOp) = { !, (, +, -, IDENT, NUM }
+FOLLOW(RelTail) = { ), ; }
+FOLLOW(Stmt) = { ++, --, ;, EOF, IDENT, char, double, float, for, int, {, } }
+FOLLOW(StmtList) = { EOF, } }
+FOLLOW(Type) = { IDENT }
+FOLLOW(Unary) = { !=, ), *, +, -, /, ;, <, <=, ==, >, >= }
+FOLLOW(UnaryOp) = { !, (, +, -, IDENT, NUM }
+
+[SELECT]
+SELECT(AddExpr -> MulExpr AddTail) = { !, (, +, -, IDENT, NUM }
+SELECT(AddOp -> +) = { + }
+SELECT(AddOp -> -) = { - }
+SELECT(AddTail -> AddOp MulExpr AddTail) = { +, - }
+SELECT(AddTail -> ε) = { !=, ), ;, <, <=, ==, >, >= }
+SELECT(AssignOp -> *=) = { *= }
+SELECT(AssignOp -> +=) = { += }
+SELECT(AssignOp -> -=) = { -= }
+SELECT(AssignOp -> /=) = { /= }
+SELECT(AssignOp -> =) = { = }
+SELECT(Block -> { StmtList }) = { { }
+SELECT(DeclInitOpt -> = Expr) = { = }
+SELECT(DeclInitOpt -> ε) = { ; }
+SELECT(DeclStmt -> Type IDENT DeclInitOpt) = { char, double, float, int }
+SELECT(Expr -> AddExpr RelTail) = { !, (, +, -, IDENT, NUM }
+SELECT(ForCondOpt -> Expr) = { !, (, +, -, IDENT, NUM }
+SELECT(ForCondOpt -> ε) = { ; }
+SELECT(ForIdTail -> AssignOp Expr) = { *=, +=, -=, /=, = }
+SELECT(ForIdTail -> IncDecOp) = { ++, -- }
+SELECT(ForInitOpt -> DeclStmt) = { char, double, float, int }
+SELECT(ForInitOpt -> IDENT ForIdTail) = { IDENT }
+SELECT(ForInitOpt -> PrefixIncDec) = { ++, -- }
+SELECT(ForInitOpt -> ε) = { ; }
+SELECT(ForIterOpt -> IDENT ForIdTail) = { IDENT }
+SELECT(ForIterOpt -> PrefixIncDec) = { ++, -- }
+SELECT(ForIterOpt -> ε) = { ) }
+SELECT(ForStmt -> for ( ForInitOpt ; ForCondOpt ; ForIterOpt ) Stmt) = { for }
+SELECT(IdStmtTail -> AssignOp Expr) = { *=, +=, -=, /=, = }
+SELECT(IdStmtTail -> IncDecOp) = { ++, -- }
+SELECT(IncDecOp -> ++) = { ++ }
+SELECT(IncDecOp -> --) = { -- }
+SELECT(MulExpr -> Unary MulTail) = { !, (, +, -, IDENT, NUM }
+SELECT(MulOp -> *) = { * }
+SELECT(MulOp -> /) = { / }
+SELECT(MulTail -> MulOp Unary MulTail) = { *, / }
+SELECT(MulTail -> ε) = { !=, ), +, -, ;, <, <=, ==, >, >= }
+SELECT(PrefixIncDec -> IncDecOp IDENT) = { ++, -- }
+SELECT(Primary -> ( Expr )) = { ( }
+SELECT(Primary -> IDENT) = { IDENT }
+SELECT(Primary -> NUM) = { NUM }
+SELECT(Program -> StmtList EOF) = { ++, --, ;, EOF, IDENT, char, double, float, for, int, { }
+SELECT(RelOp -> !=) = { != }
+SELECT(RelOp -> <) = { < }
+SELECT(RelOp -> <=) = { <= }
+SELECT(RelOp -> ==) = { == }
+SELECT(RelOp -> >) = { > }
+SELECT(RelOp -> >=) = { >= }
+SELECT(RelTail -> RelOp AddExpr RelTail) = { !=, <, <=, ==, >, >= }
+SELECT(RelTail -> ε) = { ), ; }
+SELECT(Stmt -> ;) = { ; }
+SELECT(Stmt -> Block) = { { }
+SELECT(Stmt -> DeclStmt ;) = { char, double, float, int }
+SELECT(Stmt -> ForStmt) = { for }
+SELECT(Stmt -> IDENT IdStmtTail ;) = { IDENT }
+SELECT(Stmt -> PrefixIncDec ;) = { ++, -- }
+SELECT(StmtList -> Stmt StmtList) = { ++, --, ;, IDENT, char, double, float, for, int, { }
+SELECT(StmtList -> ε) = { EOF, } }
+SELECT(Type -> char) = { char }
+SELECT(Type -> double) = { double }
+SELECT(Type -> float) = { float }
+SELECT(Type -> int) = { int }
+SELECT(Unary -> Primary) = { (, IDENT, NUM }
+SELECT(Unary -> UnaryOp Unary) = { !, +, - }
+SELECT(UnaryOp -> !) = { ! }
+SELECT(UnaryOp -> +) = { + }
+SELECT(UnaryOp -> -) = { - }

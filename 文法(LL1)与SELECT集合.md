@@ -73,6 +73,13 @@
 
 ## 关键 FIRST/SELECT 集合
 
+> 说明：项目代码已支持 **自动计算 FIRST/FOLLOW/SELECT**。
+>
+> - 计算逻辑在 `parser/ll1_sets.py`（`build_default_ll1_sets()`）
+> - 主程序运行时会额外导出一个文本文件：`{源文件名}_FIRST_FOLLOW_SELECT.txt`
+>
+> 下面仍保留关键集合的手工推导结果，便于对照验证。
+
 ### FIRST(Expr)
 
 - `FIRST(Expr) = { IDENT, NUM, '(', '+', '-', '!' }`
@@ -109,6 +116,13 @@
 ## 与代码对应的位置
 
 - 递归下降解析器：parser/rd_parser.py
-  - SELECT/FIRST 集合常量：文件顶部 `_FIRST_EXPR` / `_SELECT_*`
+  - SELECT/FIRST 的使用点：文件顶部 `_FIRST_EXPR` / `_SELECT_*`（**由自动计算结果生成**）
   - for 的三段选择：`RDParser._for_stmt()`
   - 语句选择：`RDParser._stmt()`
+
+- LL(1) 集合自动计算：parser/ll1_sets.py
+  - FIRST/FOLLOW/SELECT 计算：`LL1Grammar.compute_first_follow_select()`
+  - 默认文法（与本文对齐）：`build_default_ll1_sets()`
+
+- 集合导出文件：main.py
+  - 输出路径：`{源文件名}_FIRST_FOLLOW_SELECT.txt`

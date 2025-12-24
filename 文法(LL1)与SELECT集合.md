@@ -23,7 +23,7 @@
 ## 非终结符（non-terminal）
 
 `Program, StmtList, Stmt, Block, ForStmt, ForInitOpt, ForCondOpt, ForIterOpt,
-DeclStmt, DeclInitOpt, AssignStmt, AssignOp, IncDec, IncDecOp,
+DeclStmt, DeclInitOpt, AssignOp, IncDecOp, PrefixIncDec, IdStmtTail, ForIdTail,
 Expr, RelTail, AddExpr, AddTail, MulExpr, MulTail, Unary, Primary`
 
 ---
@@ -34,17 +34,19 @@ Expr, RelTail, AddExpr, AddTail, MulExpr, MulTail, Unary, Primary`
 
 1. `Program -> StmtList EOF`
 2. `StmtList -> Stmt StmtList | ε`
-3. `Stmt -> ForStmt | Block | DeclStmt ';' | ';' | IncDec ';' | AssignStmt ';'`
+3. `Stmt -> ForStmt | Block | DeclStmt ';' | ';' | PrefixIncDec ';' | IDENT IdStmtTail ';'`
 4. `Block -> '{' StmtList '}'`
+
+> 说明：这里把“IDENT 起始语句”的冲突做了**因子分解**：
+> - 若语句以 `IDENT` 开头，只需再看 1 个 lookahead（下一符号是 `IncDecOp` 还是 `AssignOp`）即可选择。
+> - 项目代码里目前是直接在 `Stmt` 分支里用 `peek(1)` 做同等效果。
 
 ### for 语句
 
 5. `ForStmt -> 'for' '(' ForInitOpt ';' ForCondOpt ';' ForIterOpt ')' Stmt`
-6. `ForInitOpt -> DeclStmt | IncDec | AssignStmt | ε`
+6. `ForInitOpt -> DeclStmt | PrefixIncDec | IDENT ForIdTail | ε`
 7. `ForCondOpt -> Expr | ε`
-8. `ForIterOpt -> IncDec | AssignStmt | ε`
-
-> 注：为了让 `ForInitOpt/ForIterOpt` 真正 LL(1)，推荐把 `AssignStmt` 与 `IncDec` 的 `IDENT` 起始冲突进一步因子分解（见下节）。项目代码里目前用“再看 1 个 token”的方式实现同等效果。
+8. `ForIterOpt -> PrefixIncDec | IDENT ForIdTail | ε`
 
 ### 声明/赋值/自增自减
 
@@ -52,30 +54,32 @@ Expr, RelTail, AddExpr, AddTail, MulExpr, MulTail, Unary, Primary`
 10. `Type -> 'int' | 'float' | 'double' | 'char'`
 11. `DeclInitOpt -> '=' Expr | ε`
 
-12. `AssignStmt -> IDENT AssignOp Expr`
-13. `AssignOp -> '=' | '+=' | '-=' | '*=' | '/='`
+12. `AssignOp -> '=' | '+=' | '-=' | '*=' | '/='`
 
-14. `IncDec -> IDENT IncDecOp | IncDecOp IDENT`
-15. `IncDecOp -> '++' | '--'`
+13. `IncDecOp -> '++' | '--'`
+14. `PrefixIncDec -> IncDecOp IDENT`
+
+15. `IdStmtTail -> IncDecOp | AssignOp Expr`
+16. `ForIdTail -> IncDecOp | AssignOp Expr`
 
 ### 表达式（与代码实现一致的优先级）
 
-16. `Expr -> AddExpr RelTail`
-17. `RelTail -> RelOp AddExpr RelTail | ε`
-18. `RelOp -> '<' | '<=' | '>' | '>=' | '==' | '!='`
+17. `Expr -> AddExpr RelTail`
+18. `RelTail -> RelOp AddExpr RelTail | ε`
+19. `RelOp -> '<' | '<=' | '>' | '>=' | '==' | '!='`
 
-19. `AddExpr -> MulExpr AddTail`
-20. `AddTail -> AddOp MulExpr AddTail | ε`
-21. `AddOp -> '+' | '-'`
+20. `AddExpr -> MulExpr AddTail`
+21. `AddTail -> AddOp MulExpr AddTail | ε`
+22. `AddOp -> '+' | '-'`
 
-22. `MulExpr -> Unary MulTail`
-23. `MulTail -> MulOp Unary MulTail | ε`
-24. `MulOp -> '*' | '/'`
+23. `MulExpr -> Unary MulTail`
+24. `MulTail -> MulOp Unary MulTail | ε`
+25. `MulOp -> '*' | '/'`
 
-25. `Unary -> UnaryOp Unary | Primary`
-26. `UnaryOp -> '+' | '-' | '!'`
+26. `Unary -> UnaryOp Unary | Primary`
+27. `UnaryOp -> '+' | '-' | '!'`
 
-27. `Primary -> IDENT | NUM | '(' Expr ')'`
+28. `Primary -> IDENT | NUM | '(' Expr ')'`
 
 ---
 
@@ -92,8 +96,16 @@ Expr, RelTail, AddExpr, AddTail, MulExpr, MulTail, Unary, Primary`
 
 ### ForIterOpt 的 SELECT
 
-- `SELECT(ForIterOpt -> IncDec / AssignStmt) = { 'IDENT', '++', '--' }` （其中 `IDENT` 还需看下一符号区分）
+- `SELECT(ForIterOpt -> PrefixIncDec) = { '++', '--' }`
+- `SELECT(ForIterOpt -> IDENT ForIdTail) = { 'IDENT' }`
 - `SELECT(ForIterOpt -> ε) = { ')' }`
+
+### ForIdTail / IdStmtTail 的 SELECT
+
+- `SELECT(ForIdTail -> IncDecOp) = { '++', '--' }`
+- `SELECT(ForIdTail -> AssignOp Expr) = { '=', '+=', '-=', '*=', '/=' }`
+
+（`IdStmtTail` 同理，与 `ForIdTail` 一致）
 
 ### Stmt 的 SELECT（实现中用到的那一套）
 
@@ -101,8 +113,8 @@ Expr, RelTail, AddExpr, AddTail, MulExpr, MulTail, Unary, Primary`
 - `SELECT(Stmt -> Block) = { '{' }`
 - `SELECT(Stmt -> DeclStmt ';') = { 'int','float','double','char' }`
 - `SELECT(Stmt -> ';') = { ';' }`
-- `SELECT(Stmt -> IncDec ';') = { '++','--' } ∪ { 'IDENT' 且后继是 ++/-- }`
-- `SELECT(Stmt -> AssignStmt ';') = { 'IDENT' 且后继是 =/+=/-=/... }`
+- `SELECT(Stmt -> PrefixIncDec ';') = { '++','--' }`
+- `SELECT(Stmt -> IDENT IdStmtTail ';') = { 'IDENT' }`
 
 ---
 

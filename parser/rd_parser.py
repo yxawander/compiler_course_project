@@ -88,7 +88,7 @@ class RDParser:
         self._indent = 0
         self.emitter = TACEmitter()
 
-        # 展示用：是否输出“赋值语句教材格式分析表”到 parse_trace
+        # 展示用
         self.enable_assign_table = True
 
     def parse_program(self) -> ParseResult:
@@ -116,7 +116,6 @@ class RDParser:
         self.parse_trace.append("  " * self._indent + msg)
 
     def _prod(self, lhs: str, rhs: str) -> None:
-        # “教材风格”：记录选用的产生式
         self._log(f"使用产生式: {lhs} -> {rhs}")
 
     def _enter(self, name: str) -> None:
@@ -164,7 +163,7 @@ class RDParser:
         return self.s.advance()
 
     def _sync_to(self, sync: Set[str]) -> None:
-        # 简单恐慌模式：跳过直到遇到同步集合中的 token 或 EOF
+        # 恐慌模式：跳过直到遇到同步集合中的 token 或 EOF
         while self._peek().terminal not in sync and self._peek().terminal != "EOF":
             self.s.advance()
 
@@ -206,7 +205,7 @@ class RDParser:
         return out
 
     def _build_assign_table_text(self, stmt_tokens: List[SyntaxToken]) -> List[str]:
-        # 只对形如：IDENT (ASSIGN_OP) Expr ; 的语句生成“纯文本四列表格”
+        # 只对形如：IDENT (ASSIGN_OP) Expr ;
         # 文法使用：S -> id op Expr ;，Expr -> Term ExprP，Term -> Factor TermP
         if len(stmt_tokens) < 4:
             return []
@@ -344,7 +343,6 @@ class RDParser:
         if not rows:
             return []
 
-        # 组装纯文本四列表格（不使用 Markdown 分隔线/标题语法）
         # 按用户要求：只有表头那一行保留竖线；数据行用空格对齐拉开列间距。
         out: List[str] = []
         out.append("")
@@ -467,9 +465,11 @@ class RDParser:
                     expected=sorted(list(_ASSIGN_OPS | {"++", "--"})),
                 )
         elif self._peek().terminal in _SELECT_STMT_PREFIX_INCDEC:
+            # 自增自减语句（前缀）
             self._prod("ForInitOpt", "IncDec")
             self._incdec(require_semicolon=False)
         elif self._peek().terminal in _SELECT_FOR_INIT_EPS:
+            # 空
             self._prod("ForInitOpt", "ε")
         else:
             raise ParseError(
@@ -548,17 +548,15 @@ class RDParser:
 
         # codegen skeleton
         L_begin = self.emitter.new_label()
+        L_end = self.emitter.new_label()
 
         # begin
         self.emitter.emit_label(L_begin)
 
-        # 拉链回填：先生成“跳转目标未知”的 ifFalse，等循环结束标签出现后再回填
-        falselist: List[int] = []
-
         # cond: 每轮循环都在 L_begin 后重新计算条件
         if cond_place is not None:
             cond_buf.flush_to_parent()
-            falselist.append(self.emitter.emit_if_false_placeholder(cond_place))
+            self.emitter.emit_if_false(cond_place, L_end)
 
         # body
         self._stmt()
@@ -567,11 +565,7 @@ class RDParser:
         iter_buf.flush_to_parent()
 
         self.emitter.emit_goto(L_begin)
-
-        L_end = self.emitter.new_label()
         self.emitter.emit_label(L_end)
-        if falselist:
-            self.emitter.backpatch(falselist, L_end)
 
         self._leave("ForStmt")
 

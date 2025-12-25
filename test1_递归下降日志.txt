@@ -60,6 +60,7 @@ Term -> Factor TermP        n=              17            17;
 Factor -> num               n=              17            17;
 TermP -> ε                  n=17            ;             ;
 ExprP -> ε                  n=17            ;             ;
+match ;                     n=17;                         
 
       退出 <AssignStmt>
     退出 <Stmt>
@@ -89,6 +90,7 @@ Term -> Factor TermP        m=              5             5;
 Factor -> num               m=              5             5;
 TermP -> ε                  m=5             ;             ;
 ExprP -> ε                  m=5             ;             ;
+match ;                     m=5;                          
 
       退出 <AssignStmt>
     退出 <Stmt>
@@ -118,6 +120,7 @@ Term -> Factor TermP        x=              3             3;
 Factor -> num               x=              3             3;
 TermP -> ε                  x=3             ;             ;
 ExprP -> ε                  x=3             ;             ;
+match ;                     x=3;                          
 
       退出 <AssignStmt>
     退出 <Stmt>
@@ -147,6 +150,7 @@ Term -> Factor TermP        y=              9             9;
 Factor -> num               y=              9             9;
 TermP -> ε                  y=9             ;             ;
 ExprP -> ε                  y=9             ;             ;
+match ;                     y=9;                          
 
       退出 <AssignStmt>
     退出 <Stmt>
@@ -176,6 +180,7 @@ Term -> Factor TermP        z=              12            12;
 Factor -> num               z=              12            12;
 TermP -> ε                  z=12            ;             ;
 ExprP -> ε                  z=12            ;             ;
+match ;                     z=12;                         
 
       退出 <AssignStmt>
     退出 <Stmt>
@@ -459,6 +464,7 @@ TermP -> ε                  x=x+(i*(m-1)      )             );
 ExprP -> ε                  x=x+(i*(m-1)      )             );
 TermP -> ε                  x=x+(i*(m-1))      ;             ;
 ExprP -> ε                  x=x+(i*(m-1))      ;             ;
+match ;                     x=x+(i*(m-1));                    
 
                 退出 <AssignStmt>
               退出 <Stmt>
@@ -514,6 +520,7 @@ TermP -> ε                  y-=(x+i         )             );
 ExprP -> ε                  y-=(x+i         )             );
 TermP -> ε                  y-=(x+i)        ;             ;
 ExprP -> ε                  y-=(x+i)        ;             ;
+match ;                     y-=(x+i);                     
 
                 退出 <AssignStmt>
               退出 <Stmt>

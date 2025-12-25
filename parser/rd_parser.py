@@ -192,7 +192,7 @@ class RDParser:
         if tok.terminal in {"IDENT", "NUM"}:
             return tok.lexeme
         if tok.terminal == "EOF":
-            return "EOF"
+            return ""
         return tok.lexeme
 
     @staticmethod
@@ -287,6 +287,8 @@ class RDParser:
                 if la_kind == ";":
                     consumed += stmt_tokens[i].lexeme
                     i += 1
+                    # 记录分号已被消费，避免表格最后一行仍显示剩余 ';'
+                    add_row("match ;")
                     continue
                 # 不匹配就停止生成表
                 break

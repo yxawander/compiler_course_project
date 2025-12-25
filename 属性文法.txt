@@ -1,0 +1,320 @@
+Program→StmtList EOF
+{
+}
+
+StmtList→Stmt M StmtList
+{
+backpatch（Stmt.nextlist， M.quad）；
+StmtList.nextlist = StmtList1.nextlist；
+}
+
+StmtList→ε
+{
+StmtList.nextlist = ∅；
+}
+
+M→ε
+{
+M.quad = nextquad；
+}
+
+Stmt→Block
+{
+Stmt.nextlist = Block.nextlist；
+}
+
+Block→{ StmtList }
+{
+Block.nextlist = StmtList.nextlist；
+}
+
+Stmt→；
+{
+Stmt.nextlist = ∅；
+}
+
+Stmt→DeclStmt ；
+{
+Stmt.nextlist = ∅；
+}
+
+DeclStmt→Type id
+{
+declare（id.lexeme， Type.lexeme）；
+}
+
+DeclStmt→Type id = Expr
+{
+declare（id.lexeme， Type.lexeme）；
+emit（'='， Expr.place， _， id.lexeme）；
+}
+
+Type→int
+{
+}
+
+Type→float
+{
+}
+
+Type→double
+{
+}
+
+Type→char
+{
+}
+
+Stmt→AssignStmt ；
+{
+Stmt.nextlist = ∅；
+}
+
+AssignStmt→AssignExpr
+{
+}
+
+AssignExpr→id = Expr
+{
+emit（'='， Expr.place， _， id.lexeme）；
+AssignExpr.place = id.lexeme；
+}
+
+AssignExpr→id += Expr
+{
+t = newtemp（）；
+emit（'+'， id.lexeme， Expr.place， t）；
+emit（'='， t， _， id.lexeme）；
+AssignExpr.place = id.lexeme；
+}
+
+AssignExpr→id -= Expr
+{
+t = newtemp（）；
+emit（'-'， id.lexeme， Expr.place， t）；
+emit（'='， t， _， id.lexeme）；
+AssignExpr.place = id.lexeme；
+}
+
+AssignExpr→id *= Expr
+{
+t = newtemp（）；
+emit（'*'， id.lexeme， Expr.place， t）；
+emit（'='， t， _， id.lexeme）；
+AssignExpr.place = id.lexeme；
+}
+
+AssignExpr→id /= Expr
+{
+t = newtemp（）；
+emit（'/'， id.lexeme， Expr.place， t）；
+emit（'='， t， _， id.lexeme）；
+AssignExpr.place = id.lexeme；
+}
+
+Stmt→IncDec ；
+{
+Stmt.nextlist = ∅；
+}
+
+IncDec→id ++
+{
+t = newtemp（）；
+emit（'+'， id.lexeme， '1'， t）；
+emit（'='， t， _， id.lexeme）；
+}
+
+IncDec→id --
+{
+t = newtemp（）；
+emit（'-'， id.lexeme， '1'， t）；
+emit（'='， t， _， id.lexeme）；
+}
+
+IncDec→++ id
+{
+t = newtemp（）；
+emit（'+'， id.lexeme， '1'， t）；
+emit（'='， t， _， id.lexeme）；
+}
+
+IncDec→-- id
+{
+t = newtemp（）；
+emit（'-'， id.lexeme， '1'， t）；
+emit（'='， t， _， id.lexeme）；
+}
+
+Stmt→ForStmt
+{
+Stmt.nextlist = ForStmt.nextlist；
+}
+
+ForStmt→for （ ForInitOpt ； M1 ForCondOpt ； M2 ForIterOpt ） M3 Stmt
+{
+backpatch（ForCondOpt.truelist， M3.quad）；
+backpatch（Stmt.nextlist， M2.quad）；
+emit（'goto'， _， _， M1.quad）；
+ForStmt.nextlist = ForCondOpt.falselist；
+}
+
+M1→ε
+{
+M1.quad = nextquad；
+}
+
+M2→ε
+{
+M2.quad = nextquad；
+}
+
+M3→ε
+{
+M3.quad = nextquad；
+}
+
+ForInitOpt→DeclStmt
+{
+}
+
+ForInitOpt→AssignStmt
+{
+}
+
+ForInitOpt→IncDec
+{
+}
+
+ForInitOpt→ε
+{
+}
+
+ForCondOpt→Expr
+{
+ForCondOpt.truelist = makelist（nextquad）；
+emit（'if'， Expr.place， _， _）；
+ForCondOpt.falselist = makelist（nextquad）；
+emit（'goto'， _， _， _）；
+}
+
+ForCondOpt→ε
+{
+ForCondOpt.truelist = ∅；
+ForCondOpt.falselist = ∅；
+}
+
+ForIterOpt→AssignStmt
+{
+}
+
+ForIterOpt→IncDec
+{
+}
+
+ForIterOpt→ε
+{
+}
+
+Expr→AddExpr
+{
+Expr.place = AddExpr.place；
+Expr.typ = AddExpr.typ；
+}
+
+Expr→AddExpr relop AddExpr
+{
+t = newtemp（）；
+emit（relop， AddExpr1.place， AddExpr2.place， t）；
+Expr.place = t；
+Expr.typ = int；
+}
+
+AddExpr→MulExpr
+{
+AddExpr.place = MulExpr.place；
+AddExpr.typ = MulExpr.typ；
+}
+
+AddExpr→AddExpr + MulExpr
+{
+t = newtemp（）；
+emit（'+'， AddExpr1.place， MulExpr.place， t）；
+AddExpr.place = t；
+AddExpr.typ = promote（AddExpr1.typ， MulExpr.typ）；
+}
+
+AddExpr→AddExpr - MulExpr
+{
+t = newtemp（）；
+emit（'-'， AddExpr1.place， MulExpr.place， t）；
+AddExpr.place = t；
+AddExpr.typ = promote（AddExpr1.typ， MulExpr.typ）；
+}
+
+MulExpr→Unary
+{
+MulExpr.place = Unary.place；
+MulExpr.typ = Unary.typ；
+}
+
+MulExpr→MulExpr * Unary
+{
+t = newtemp（）；
+emit（'*'， MulExpr1.place， Unary.place， t）；
+MulExpr.place = t；
+MulExpr.typ = promote（MulExpr1.typ， Unary.typ）；
+}
+
+MulExpr→MulExpr / Unary
+{
+t = newtemp（）；
+emit（'/'， MulExpr1.place， Unary.place， t）；
+MulExpr.place = t；
+MulExpr.typ = promote（MulExpr1.typ， Unary.typ）；
+}
+
+Unary→Primary
+{
+Unary.place = Primary.place；
+Unary.typ = Primary.typ；
+}
+
+Unary→+ Unary
+{
+Unary.place = Unary1.place；
+Unary.typ = Unary1.typ；
+}
+
+Unary→- Unary
+{
+t = newtemp（）；
+emit（'-'， '0'， Unary1.place， t）；
+Unary.place = t；
+Unary.typ = Unary1.typ；
+}
+
+Unary→! Unary
+{
+t = newtemp（）；
+emit（'!'， Unary1.place， _， t）；
+Unary.place = t；
+Unary.typ = int；
+}
+
+Primary→id
+{
+Primary.place = id.lexeme；
+Primary.typ = type（id）；
+}
+
+Primary→num
+{
+Primary.place = num.lexeme；
+Primary.typ = num.type；
+}
+
+Primary→（ Expr ）
+{
+Primary.place = Expr.place；
+Primary.typ = Expr.typ；
+}

@@ -67,18 +67,18 @@ class DFALexer:
 
         for token_type, pattern in patterns.items():
             try:
-                self._log_build(f"\n构建 {token_type} 的模式: {pattern}")
+                self._log_build(f"\n[规则装配] Token={token_type} | 正规式: {pattern}")
                 # 词法分析完整流程：正规式 -> NFA -> DFA -> 最小化DFA
                 nfa = nfa_builder.build_nfa(pattern)
-                self._log_build("NFA构建成功")
+                self._log_build("  ✓ 已生成 NFA")
                 dfa = NFAToDFAConverter(nfa).convert_to_dfa()
-                self._log_build(f"DFA转换成功，状态数: {len(dfa.states)}")
+                self._log_build(f"  ✓ NFA→DFA 转换完成（状态数: {len(dfa.states)}）")
                 minimized = DFAMinimizer().minimize(dfa)
-                self._log_build(f"DFA最小化成功，状态数: {len(minimized.states)}")
+                self._log_build(f"  ✓ DFA 最小化完成（状态数: {len(minimized.states)}）")
                 self.token_dfas[token_type] = minimized
-                self._log_build(f"=== {token_type} DFA构建完成 ===")
+                self._log_build(f"  ✅ {token_type} 自动机就绪")
             except Exception as e:
-                self._log_build(f"❌ 构建 {token_type} 失败: {e}")
+                self._log_build(f"  ❌ {token_type} 自动机构建失败: {e}")
 
     def dump_patterns_and_dfas(self) -> str:
         lines: List[str] = []

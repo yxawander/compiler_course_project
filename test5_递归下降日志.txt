@@ -1,0 +1,257 @@
+========================================
+        递归下降解析日志
+========================================
+
+进入 <Program>
+  进入 <StmtList>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+        语义错误 @ 行2,列5: 重复声明标识符（符号: a）
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+        match = (=)
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match NUM (3)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match char (char)
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> AssignStmt ;
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (1.2)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+          语义错误 @ 行7,列1: 类型不兼容：无法将 float 赋值给 int（符号: a）
+        退出 <AssignExpr>
+
+【赋值语句分析表】a=1.2;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            a             a=1.2;
+Expr -> Term ExprP          a=              1.2           1.2;
+Term -> Factor TermP        a=              1.2           1.2;
+Factor -> num               a=              1.2           1.2;
+TermP -> ε                  a=1.2           ;             ;
+ExprP -> ε                  a=1.2           ;             ;
+match ;                     a=1.2;                        
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> AssignStmt ;
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (300)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+          语义错误 @ 行8,列1: 类型不兼容：无法将 int 赋值给 char（符号: c）
+        退出 <AssignExpr>
+
+【赋值语句分析表】c=300;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            c             c=300;
+Expr -> Term ExprP          c=              300           300;
+Term -> Factor TermP        c=              300           300;
+Factor -> num               c=              300           300;
+TermP -> ε                  c=300           ;             ;
+ExprP -> ε                  c=300           ;             ;
+match ;                     c=300;                        
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> AssignStmt ;
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match IDENT (y)
+                    语义错误 @ 行10,列5: 使用了未声明的标识符（符号: y）
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (1)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <AssignExpr>
+
+【赋值语句分析表】a=y+1;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            a             a=y+1;
+Expr -> Term ExprP          a=              y             y+1;
+Term -> Factor TermP        a=              y             y+1;
+Factor -> id                a=              y             y+1;
+TermP -> ε                  a=y             +             +1;
+ExprP -> + Term ExprP       a=y             +             +1;
+Term -> Factor TermP        a=y+            1             1;
+Factor -> num               a=y+            1             1;
+TermP -> ε                  a=y+1           ;             ;
+ExprP -> ε                  a=y+1           ;             ;
+match ;                     a=y+1;                        
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> AssignStmt ;
+      进入 <AssignStmt>
+        进入 <AssignExpr>
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match IDENT (a)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match IDENT (n)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+          语义错误 @ 行11,列1: 使用了未声明的标识符（符号: b）
+        退出 <AssignExpr>
+
+【赋值语句分析表】b=a+n;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            b             b=a+n;
+Expr -> Term ExprP          b=              a             a+n;
+Term -> Factor TermP        b=              a             a+n;
+Factor -> id                b=              a             a+n;
+TermP -> ε                  b=a             +             +n;
+ExprP -> + Term ExprP       b=a             +             +n;
+Term -> Factor TermP        b=a+            n             n;
+Factor -> id                b=a+            n             n;
+TermP -> ε                  b=a+n           ;             ;
+ExprP -> ε                  b=a+n           ;             ;
+match ;                     b=a+n;                        
+
+      退出 <AssignStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> Block
+      进入 <Block>
+        进入 <StmtList>
+          进入 <Stmt>
+            使用产生式: Stmt -> DeclStmt ;
+            进入 <DeclStmt>
+              match int (int)
+            退出 <DeclStmt>
+          退出 <Stmt>
+          进入 <Stmt>
+            使用产生式: Stmt -> AssignStmt ;
+            进入 <AssignStmt>
+              进入 <AssignExpr>
+                match = (=)
+                进入 <Expr>
+                  进入 <AddExpr>
+                    进入 <MulExpr>
+                      进入 <Unary>
+                        进入 <Primary>
+                          match NUM (2)
+                        退出 <Primary>
+                      退出 <Unary>
+                    退出 <MulExpr>
+                  退出 <AddExpr>
+                退出 <Expr>
+              退出 <AssignExpr>
+
+【赋值语句分析表】a=2;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            a             a=2;
+Expr -> Term ExprP          a=              2             2;
+Term -> Factor TermP        a=              2             2;
+Factor -> num               a=              2             2;
+TermP -> ε                  a=2             ;             ;
+ExprP -> ε                  a=2             ;             ;
+match ;                     a=2;                          
+
+            退出 <AssignStmt>
+          退出 <Stmt>
+        退出 <StmtList>
+      退出 <Block>
+    退出 <Stmt>
+  退出 <StmtList>
+退出 <Program>
+
+========================================
+      语义/中间代码生成日志
+========================================
+
+n = 3
+a = 1.2
+c = 300
+t1 = y + 1
+a = t1
+t2 = a + n
+b = t2
+a = 2
+
+========================================
+            语义错误
+========================================
+
+语义错误 @ 行2,列5: 重复声明标识符（符号: a）
+语义错误 @ 行7,列1: 类型不兼容：无法将 float 赋值给 int（符号: a）
+语义错误 @ 行8,列1: 类型不兼容：无法将 int 赋值给 char（符号: c）
+语义错误 @ 行10,列5: 使用了未声明的标识符（符号: y）
+语义错误 @ 行11,列1: 使用了未声明的标识符（符号: b）

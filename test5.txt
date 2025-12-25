@@ -1,0 +1,16 @@
+int a;
+int a;
+
+int n = 3;
+char c;
+
+a = 1.2;
+c = 300;
+
+a = y + 1;
+b = a + n;
+
+{
+  int a;
+  a = 2;
+}

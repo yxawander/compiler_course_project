@@ -5,6 +5,60 @@
 进入 <Program>
   进入 <StmtList>
     进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+        match = (=)
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match NUM (10)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+        match = (=)
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match NUM (5)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+        match = (=)
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match NUM (0)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
       使用产生式: Stmt -> ForStmt
       进入 <ForStmt>
         使用产生式: ForStmt -> for ( ForInitOpt ; ForCondOpt ; ForIterOpt ) Stmt
@@ -195,6 +249,7 @@ TermP -> * Factor TermP      x=x+i           *             *j;
 Factor -> id                x=x+i*          j             j;
 TermP -> ε                  x=x+i*j         ;             ;
 ExprP -> ε                  x=x+i*j         ;             ;
+match ;                     x=x+i*j;                      
 
                                     退出 <AssignStmt>
                                   退出 <Stmt>
@@ -235,6 +290,7 @@ Term -> Factor TermP        x=x+            k             k;
 Factor -> id                x=x+            k             k;
 TermP -> ε                  x=x+k           ;             ;
 ExprP -> ε                  x=x+k           ;             ;
+match ;                     x=x+k;                        
 
                                     退出 <AssignStmt>
                                   退出 <Stmt>
@@ -275,6 +331,7 @@ Term -> Factor TermP        x=x-            i             i;
 Factor -> id                x=x-            i             i;
 TermP -> ε                  x=x-i           ;             ;
 ExprP -> ε                  x=x-i           ;             ;
+match ;                     x=x-i;                        
 
                                     退出 <AssignStmt>
                                   退出 <Stmt>
@@ -300,6 +357,9 @@ ExprP -> ε                  x=x-i           ;             ;
       语义/中间代码生成日志
 ========================================
 
+n = 10
+m = 5
+x = 0
 i = 0
 L1:
 t1 = i < n

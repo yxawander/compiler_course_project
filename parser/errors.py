@@ -19,3 +19,15 @@ class ParseError(Exception):
         if self.expected:
             exp = f"，期望: {', '.join(sorted(set(self.expected)))}"
         return f"语法错误 @ 行{self.line},列{self.column}: {self.message}（得到: {self.got}{exp}）"
+
+
+@dataclass
+class SemanticError(Exception):
+    message: str
+    line: int
+    column: int
+    # 相关符号（如标识符/运算符）
+    symbol: str
+
+    def __str__(self) -> str:
+        return f"语义错误 @ 行{self.line},列{self.column}: {self.message}（符号: {self.symbol}）"

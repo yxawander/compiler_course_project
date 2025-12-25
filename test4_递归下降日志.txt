@@ -1,0 +1,356 @@
+========================================
+        递归下降解析日志
+========================================
+
+进入 <Program>
+  进入 <StmtList>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+        match = (=)
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match NUM (3)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+        match = (=)
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match NUM (2)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> DeclStmt ;
+      进入 <DeclStmt>
+        match int (int)
+        match = (=)
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match NUM (0)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+      退出 <DeclStmt>
+    退出 <Stmt>
+    进入 <Stmt>
+      使用产生式: Stmt -> ForStmt
+      进入 <ForStmt>
+        使用产生式: ForStmt -> for ( ForInitOpt ; ForCondOpt ; ForIterOpt ) Stmt
+        使用产生式: ForInitOpt -> DeclStmt
+        进入 <DeclStmt>
+          match int (int)
+          match = (=)
+          进入 <Expr>
+            进入 <AddExpr>
+              进入 <MulExpr>
+                进入 <Unary>
+                  进入 <Primary>
+                    match NUM (0)
+                  退出 <Primary>
+                退出 <Unary>
+              退出 <MulExpr>
+            退出 <AddExpr>
+          退出 <Expr>
+        退出 <DeclStmt>
+        使用产生式: ForCondOpt -> Expr
+        进入 <Expr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match IDENT (i)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+          进入 <AddExpr>
+            进入 <MulExpr>
+              进入 <Unary>
+                进入 <Primary>
+                  match IDENT (n)
+                退出 <Primary>
+              退出 <Unary>
+            退出 <MulExpr>
+          退出 <AddExpr>
+        退出 <Expr>
+        使用产生式: ForIterOpt -> AssignStmt | IncDec
+        进入 <IncDec>
+          match ++ (++)
+        退出 <IncDec>
+        进入 <Stmt>
+          使用产生式: Stmt -> Block
+          进入 <Block>
+            进入 <StmtList>
+              进入 <Stmt>
+                使用产生式: Stmt -> AssignStmt ;
+                进入 <AssignStmt>
+                  进入 <AssignExpr>
+                    match = (=)
+                    进入 <Expr>
+                      进入 <AddExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              match IDENT (x)
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              match NUM (1)
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                      退出 <AddExpr>
+                    退出 <Expr>
+                  退出 <AssignExpr>
+
+【赋值语句分析表】x=x+1;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            x             x=x+1;
+Expr -> Term ExprP          x=              x             x+1;
+Term -> Factor TermP        x=              x             x+1;
+Factor -> id                x=              x             x+1;
+TermP -> ε                  x=x             +             +1;
+ExprP -> + Term ExprP       x=x             +             +1;
+Term -> Factor TermP        x=x+            1             1;
+Factor -> num               x=x+            1             1;
+TermP -> ε                  x=x+1           ;             ;
+ExprP -> ε                  x=x+1           ;             ;
+match ;                     x=x+1;                        
+
+                退出 <AssignStmt>
+              退出 <Stmt>
+              进入 <Stmt>
+                使用产生式: Stmt -> ForStmt
+                进入 <ForStmt>
+                  使用产生式: ForStmt -> for ( ForInitOpt ; ForCondOpt ; ForIterOpt ) Stmt
+                  使用产生式: ForInitOpt -> DeclStmt
+                  进入 <DeclStmt>
+                    match int (int)
+                    match = (=)
+                    进入 <Expr>
+                      进入 <AddExpr>
+                        进入 <MulExpr>
+                          进入 <Unary>
+                            进入 <Primary>
+                              match NUM (0)
+                            退出 <Primary>
+                          退出 <Unary>
+                        退出 <MulExpr>
+                      退出 <AddExpr>
+                    退出 <Expr>
+                  退出 <DeclStmt>
+                  使用产生式: ForCondOpt -> Expr
+                  进入 <Expr>
+                    进入 <AddExpr>
+                      进入 <MulExpr>
+                        进入 <Unary>
+                          进入 <Primary>
+                            match IDENT (j)
+                          退出 <Primary>
+                        退出 <Unary>
+                      退出 <MulExpr>
+                    退出 <AddExpr>
+                    进入 <AddExpr>
+                      进入 <MulExpr>
+                        进入 <Unary>
+                          进入 <Primary>
+                            match IDENT (m)
+                          退出 <Primary>
+                        退出 <Unary>
+                      退出 <MulExpr>
+                    退出 <AddExpr>
+                  退出 <Expr>
+                  使用产生式: ForIterOpt -> AssignStmt | IncDec
+                  进入 <IncDec>
+                    match ++ (++)
+                  退出 <IncDec>
+                  进入 <Stmt>
+                    使用产生式: Stmt -> Block
+                    进入 <Block>
+                      进入 <StmtList>
+                        进入 <Stmt>
+                          使用产生式: Stmt -> AssignStmt ;
+                          进入 <AssignStmt>
+                            进入 <AssignExpr>
+                              match = (=)
+                              进入 <Expr>
+                                进入 <AddExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (x)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (i)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (j)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                退出 <AddExpr>
+                              退出 <Expr>
+                            退出 <AssignExpr>
+
+【赋值语句分析表】x=x+i*j;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            x             x=x+i*j;
+Expr -> Term ExprP          x=              x             x+i*j;
+Term -> Factor TermP        x=              x             x+i*j;
+Factor -> id                x=              x             x+i*j;
+TermP -> ε                  x=x             +             +i*j;
+ExprP -> + Term ExprP       x=x             +             +i*j;
+Term -> Factor TermP        x=x+            i             i*j;
+Factor -> id                x=x+            i             i*j;
+TermP -> * Factor TermP      x=x+i           *             *j;
+Factor -> id                x=x+i*          j             j;
+TermP -> ε                  x=x+i*j         ;             ;
+ExprP -> ε                  x=x+i*j         ;             ;
+match ;                     x=x+i*j;                      
+
+                          退出 <AssignStmt>
+                        退出 <Stmt>
+                        进入 <Stmt>
+                          使用产生式: Stmt -> AssignStmt ;
+                          进入 <AssignStmt>
+                            进入 <AssignExpr>
+                              match = (=)
+                              进入 <Expr>
+                                进入 <AddExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        match IDENT (x)
+                                      退出 <Primary>
+                                    退出 <Unary>
+                                  退出 <MulExpr>
+                                  进入 <MulExpr>
+                                    进入 <Unary>
+                                      进入 <Primary>
+                                        语法错误 @ 行10,列11: 表达式缺少操作数（得到: ;，期望: (, IDENT, NUM）
+                                      退出 <Stmt>
+                                      进入 <Stmt>
+                                        使用产生式: Stmt -> AssignStmt ;
+                                        进入 <AssignStmt>
+                                          进入 <AssignExpr>
+                                            match = (=)
+                                            进入 <Expr>
+                                              进入 <AddExpr>
+                                                进入 <MulExpr>
+                                                  进入 <Unary>
+                                                    进入 <Primary>
+                                                      match IDENT (x)
+                                                    退出 <Primary>
+                                                  退出 <Unary>
+                                                退出 <MulExpr>
+                                                进入 <MulExpr>
+                                                  进入 <Unary>
+                                                    进入 <Primary>
+                                                      match NUM (2)
+                                                    退出 <Primary>
+                                                  退出 <Unary>
+                                                退出 <MulExpr>
+                                              退出 <AddExpr>
+                                            退出 <Expr>
+                                          退出 <AssignExpr>
+
+【赋值语句分析表】x=x+2;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            x             x=x+2;
+Expr -> Term ExprP          x=              x             x+2;
+Term -> Factor TermP        x=              x             x+2;
+Factor -> id                x=              x             x+2;
+TermP -> ε                  x=x             +             +2;
+ExprP -> + Term ExprP       x=x             +             +2;
+Term -> Factor TermP        x=x+            2             2;
+Factor -> num               x=x+            2             2;
+TermP -> ε                  x=x+2           ;             ;
+ExprP -> ε                  x=x+2           ;             ;
+match ;                     x=x+2;                        
+
+                                        退出 <AssignStmt>
+                                      退出 <Stmt>
+                                    退出 <StmtList>
+                                  退出 <Block>
+                                退出 <Stmt>
+                              退出 <ForStmt>
+                            退出 <Stmt>
+                          退出 <StmtList>
+                        退出 <Block>
+                      退出 <Stmt>
+                    退出 <ForStmt>
+                  退出 <Stmt>
+                退出 <StmtList>
+              退出 <Program>
+
+========================================
+      语义/中间代码生成日志
+========================================
+
+n = 3
+m = 2
+x = 0
+i = 0
+L1:
+t1 = i < n
+ifFalse t1 goto L2
+t3 = x + 1
+x = t3
+j = 0
+L3:
+t4 = j < m
+ifFalse t4 goto L4
+t6 = i * j
+t7 = x + t6
+x = t7
+t8 = x + 2
+x = t8
+t5 = j + 1
+j = t5
+goto L3
+L4:
+t2 = i + 1
+i = t2
+goto L1
+L2:
+
+========================================
+            语法错误
+========================================
+
+语法错误 @ 行10,列11: 表达式缺少操作数（得到: ;，期望: (, IDENT, NUM）

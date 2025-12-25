@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional, Sequence, Set, Tuple
+from typing import Dict, List, Optional, Sequence, Set, Tuple
 
-from parser.errors import ParseError
+from parser.errors import ParseError, SemanticError
 from parser.stream import SyntaxToken, TokenStream
 from parser.tac import Quad, TACEmitter
 
@@ -16,6 +16,34 @@ _ADD_OPS = {"+", "-"}
 _MUL_OPS = {"*", "/"}
 _ASSIGN_OPS = {"=", "+=", "-=", "*=", "/="}
 _UNARY_PREFIX_OPS = {"+", "-", "!"}
+
+
+@dataclass(frozen=True)
+class ExprAttr:
+    place: str
+    typ: str  # 'char' | 'int' | 'float' | 'double'
+
+
+_TYPE_RANK: Dict[str, int] = {"char": 0, "int": 1, "float": 2, "double": 3}
+
+
+def _promote(a: str, b: str) -> str:
+    ra = _TYPE_RANK.get(a, 1)
+    rb = _TYPE_RANK.get(b, 1)
+    # 统一为四种可展示类型
+    inv = {0: "char", 1: "int", 2: "float", 3: "double"}
+    return inv[max(ra, rb)]
+
+
+def _is_numeric(t: str) -> bool:
+    return t in _TYPE_RANK
+
+
+def _is_assignable(dst: str, src: str) -> bool:
+    # 只允许“拓宽”赋值：char->int->float->double
+    if dst not in _TYPE_RANK or src not in _TYPE_RANK:
+        return False
+    return _TYPE_RANK[src] <= _TYPE_RANK[dst]
 
 # --- LL(1) FIRST/FOLLOW/SELECT（自动计算） ---
 _LL1 = build_default_ll1_sets()
@@ -89,6 +117,7 @@ class _DeferredEmitter:
 class ParseResult:
     ok: bool
     errors: List[ParseError]
+    semantic_errors: List[SemanticError]
     parse_trace: List[str]
     sem_trace: List[str]
     emitter: TACEmitter
@@ -98,9 +127,13 @@ class RDParser:
     def __init__(self, stream: TokenStream):
         self.s = stream
         self.errors: List[ParseError] = []
+        self.semantic_errors: List[SemanticError] = []
         self.parse_trace: List[str] = []
         self._indent = 0
         self.emitter = TACEmitter()
+
+        # 语义：符号表（支持块级作用域）
+        self._scopes: List[Dict[str, str]] = [{}]
 
         # 展示用
         self.enable_assign_table = True
@@ -110,7 +143,7 @@ class RDParser:
         try:
             self._stmt_list(stop_terminals={"EOF"})
             self._expect("EOF")
-            ok = len(self.errors) == 0
+            ok = len(self.errors) == 0 and len(self.semantic_errors) == 0
         except ParseError as e:
             self.errors.append(e)
             ok = False
@@ -120,10 +153,37 @@ class RDParser:
         return ParseResult(
             ok=ok,
             errors=self.errors,
+            semantic_errors=self.semantic_errors,
             parse_trace=self.parse_trace,
             sem_trace=list(self.emitter.trace),
             emitter=self.emitter,
         )
+
+    # ---------------- semantic helpers ----------------
+    def _lookup_type(self, name: str) -> Optional[str]:
+        for scope in reversed(self._scopes):
+            if name in scope:
+                return scope[name]
+        return None
+
+    def _declare(self, name: str, typ: str) -> bool:
+        cur = self._scopes[-1]
+        if name in cur:
+            return False
+        cur[name] = typ
+        return True
+
+    def _push_scope(self) -> None:
+        self._scopes.append({})
+
+    def _pop_scope(self) -> None:
+        if len(self._scopes) > 1:
+            self._scopes.pop()
+
+    def _sem_error(self, tok: SyntaxToken, message: str, symbol: str) -> None:
+        e = SemanticError(message=message, line=tok.line, column=tok.column, symbol=symbol)
+        self.semantic_errors.append(e)
+        self._log(str(e))
 
     # ---------------- trace helpers ----------------
     def _log(self, msg: str) -> None:
@@ -450,7 +510,9 @@ class RDParser:
     def _block(self) -> None:
         self._enter("Block")
         self._expect("{")
+        self._push_scope()
         self._stmt_list(stop_terminals={"}"})
+        self._pop_scope()
         self._expect("}")
         self._leave("Block")
 
@@ -505,7 +567,8 @@ class RDParser:
             saved = self.emitter
             self.emitter = cond_buf
             try:
-                cond_place = self._expr()
+                cond_attr = self._expr()
+                cond_place = cond_attr.place
             finally:
                 self.emitter = saved
         elif self._peek().terminal in _SELECT_FOR_COND_EPS:
@@ -590,9 +653,19 @@ class RDParser:
         type_tok = self._expect_any(sorted(_TYPE_KEYWORDS))
         ident = self._expect("IDENT")
 
+        if not self._declare(ident.lexeme, type_tok.lexeme):
+            self._sem_error(ident, "重复声明标识符", ident.lexeme)
+
         if self._match("=") is not None:
             rhs = self._expr()
-            self.emitter.emit("=", rhs, "", ident.lexeme)
+            declared = self._lookup_type(ident.lexeme)
+            if declared is not None and not _is_assignable(declared, rhs.typ):
+                self._sem_error(
+                    ident,
+                    f"类型不兼容：无法将 {rhs.typ} 赋值给 {declared}",
+                    ident.lexeme,
+                )
+            self.emitter.emit("=", rhs.place, "", ident.lexeme)
 
         if require_semicolon:
             self._expect(";")
@@ -621,14 +694,31 @@ class RDParser:
         op_tok = self._expect_any(sorted(_ASSIGN_OPS))
         rhs = self._expr()
 
+        lhs_type = self._lookup_type(ident.lexeme)
+        if lhs_type is None:
+            self._sem_error(ident, "使用了未声明的标识符", ident.lexeme)
+            lhs_type = "int"
+
         if op_tok.terminal == "=":
-            self.emitter.emit("=", rhs, "", ident.lexeme)
+            if not _is_assignable(lhs_type, rhs.typ):
+                self._sem_error(
+                    ident,
+                    f"类型不兼容：无法将 {rhs.typ} 赋值给 {lhs_type}",
+                    ident.lexeme,
+                )
+        else:
+            # 复合赋值要求数值类型
+            if not (_is_numeric(lhs_type) and _is_numeric(rhs.typ)):
+                self._sem_error(ident, "复合赋值运算要求数值类型", op_tok.lexeme)
+
+        if op_tok.terminal == "=":
+            self.emitter.emit("=", rhs.place, "", ident.lexeme)
         else:
             # x += y 等价于 x = x + y
             mapping = {"+=": "+", "-=": "-", "*=": "*", "/=": "/"}
             arith = mapping[op_tok.terminal]
             t = self.emitter.new_temp()
-            self.emitter.emit(arith, ident.lexeme, rhs, t)
+            self.emitter.emit(arith, ident.lexeme, rhs.place, t)
             self.emitter.emit("=", t, "", ident.lexeme)
 
         self._leave("AssignExpr")
@@ -646,6 +736,13 @@ class RDParser:
 
         one = "1"
         t = self.emitter.new_temp()
+
+        lhs_type = self._lookup_type(ident.lexeme)
+        if lhs_type is None:
+            self._sem_error(ident, "使用了未声明的标识符", ident.lexeme)
+        elif not _is_numeric(lhs_type):
+            self._sem_error(ident, "自增/自减要求数值类型", ident.lexeme)
+
         if op == "++":
             self.emitter.emit("+", ident.lexeme, one, t)
         else:
@@ -665,36 +762,40 @@ class RDParser:
             op = self.s.advance().terminal
             right = self._add_expr()
             t = self.emitter.new_temp()
-            self.emitter.emit(op, left, right, t)
-            left = t
+            self.emitter.emit(op, left.place, right.place, t)
+            left = ExprAttr(place=t, typ="int")
         self._leave("Expr")
         return left
 
-    def _add_expr(self) -> str:
+    def _add_expr(self) -> ExprAttr:
         self._enter("AddExpr")
         left = self._mul_expr()
         while self._peek().terminal in _ADD_OPS:
             op = self.s.advance().terminal
             right = self._mul_expr()
             t = self.emitter.new_temp()
-            self.emitter.emit(op, left, right, t)
-            left = t
+            if not (_is_numeric(left.typ) and _is_numeric(right.typ)):
+                self._sem_error(self._peek(), "算术运算要求数值类型", op)
+            self.emitter.emit(op, left.place, right.place, t)
+            left = ExprAttr(place=t, typ=_promote(left.typ, right.typ))
         self._leave("AddExpr")
         return left
 
-    def _mul_expr(self) -> str:
+    def _mul_expr(self) -> ExprAttr:
         self._enter("MulExpr")
         left = self._unary()
         while self._peek().terminal in _MUL_OPS:
             op = self.s.advance().terminal
             right = self._unary()
             t = self.emitter.new_temp()
-            self.emitter.emit(op, left, right, t)
-            left = t
+            if not (_is_numeric(left.typ) and _is_numeric(right.typ)):
+                self._sem_error(self._peek(), "算术运算要求数值类型", op)
+            self.emitter.emit(op, left.place, right.place, t)
+            left = ExprAttr(place=t, typ=_promote(left.typ, right.typ))
         self._leave("MulExpr")
         return left
 
-    def _unary(self) -> str:
+    def _unary(self) -> ExprAttr:
         self._enter("Unary")
         if self._peek().terminal in _UNARY_PREFIX_OPS:
             op = self.s.advance().terminal
@@ -705,30 +806,39 @@ class RDParser:
                 return x
             t = self.emitter.new_temp()
             if op == "-":
-                self.emitter.emit("-", "0", x, t)
+                if not _is_numeric(x.typ):
+                    self._sem_error(self._peek(), "一元负号要求数值类型", "-")
+                self.emitter.emit("-", "0", x.place, t)
+                self._leave("Unary")
+                return ExprAttr(place=t, typ=x.typ)
             else:
                 # !x 记作 t = ! x（作为四元式打印用）
-                self.emitter.emit("!", x, "", t)
-            self._leave("Unary")
-            return t
+                self.emitter.emit("!", x.place, "", t)
+                self._leave("Unary")
+                return ExprAttr(place=t, typ="int")
 
         place = self._primary()
         self._leave("Unary")
         return place
 
-    def _primary(self) -> str:
+    def _primary(self) -> ExprAttr:
         self._enter("Primary")
         tok = self._peek()
         if tok.terminal == "IDENT":
             t = self.s.advance()
             self._log(f"match IDENT ({t.lexeme})")
+            typ = self._lookup_type(t.lexeme)
+            if typ is None:
+                self._sem_error(t, "使用了未声明的标识符", t.lexeme)
+                typ = "int"
             self._leave("Primary")
-            return t.lexeme
+            return ExprAttr(place=t.lexeme, typ=typ)
         if tok.terminal == "NUM":
             t = self.s.advance()
             self._log(f"match NUM ({t.lexeme})")
+            typ = "float" if "." in t.lexeme else "int"
             self._leave("Primary")
-            return t.lexeme
+            return ExprAttr(place=t.lexeme, typ=typ)
         if tok.terminal == "(":
             self._expect("(")
             x = self._expr()

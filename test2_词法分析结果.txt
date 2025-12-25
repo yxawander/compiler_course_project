@@ -4,95 +4,113 @@
 源文件: test2.txt
 ========================================
 
-行   1, 列  1 | KEYWORD         | for
-行   1, 列  5 | DELIMITER       | (
-行   1, 列  6 | KEYWORD         | int
-行   1, 列 10 | IDENTIFIER      | i
-行   1, 列 12 | OPERATOR        | =
-行   1, 列 14 | INTEGER         | 0
-行   1, 列 15 | DELIMITER       | ;
-行   1, 列 17 | IDENTIFIER      | i
-行   1, 列 19 | OPERATOR        | <
-行   1, 列 21 | IDENTIFIER      | n
-行   1, 列 22 | DELIMITER       | ;
-行   1, 列 24 | IDENTIFIER      | i
-行   1, 列 25 | OPERATOR        | ++
-行   1, 列 27 | DELIMITER       | )
-行   1, 列 29 | DELIMITER       | {
+行   1, 列  1 | KEYWORD         | int
+行   1, 列  5 | IDENTIFIER      | n
+行   1, 列  7 | OPERATOR        | =
+行   1, 列  9 | INTEGER         | 10
+行   1, 列 11 | DELIMITER       | ;
 ────────────────────────────────────────
-行   2, 列  5 | KEYWORD         | for
-行   2, 列  9 | DELIMITER       | (
-行   2, 列 10 | KEYWORD         | int
-行   2, 列 14 | IDENTIFIER      | j
-行   2, 列 16 | OPERATOR        | =
-行   2, 列 18 | INTEGER         | 0
-行   2, 列 19 | DELIMITER       | ;
-行   2, 列 21 | IDENTIFIER      | j
-行   2, 列 23 | OPERATOR        | <
-行   2, 列 25 | IDENTIFIER      | m
-行   2, 列 26 | DELIMITER       | ;
-行   2, 列 28 | IDENTIFIER      | j
-行   2, 列 29 | OPERATOR        | ++
-行   2, 列 31 | DELIMITER       | )
-行   2, 列 33 | DELIMITER       | {
+行   2, 列  1 | KEYWORD         | int
+行   2, 列  5 | IDENTIFIER      | m
+行   2, 列  7 | OPERATOR        | =
+行   2, 列  9 | INTEGER         | 5
+行   2, 列 10 | DELIMITER       | ;
 ────────────────────────────────────────
-行   3, 列  9 | KEYWORD         | for
-行   3, 列 13 | DELIMITER       | (
-行   3, 列 14 | KEYWORD         | int
-行   3, 列 18 | IDENTIFIER      | k
-行   3, 列 20 | OPERATOR        | =
-行   3, 列 22 | INTEGER         | 0
-行   3, 列 23 | DELIMITER       | ;
-行   3, 列 25 | IDENTIFIER      | k
-行   3, 列 27 | OPERATOR        | <
-行   3, 列 29 | IDENTIFIER      | j
-行   3, 列 30 | DELIMITER       | ;
-行   3, 列 32 | IDENTIFIER      | k
-行   3, 列 33 | OPERATOR        | ++
-行   3, 列 35 | DELIMITER       | )
-行   3, 列 37 | DELIMITER       | {
+行   3, 列  1 | KEYWORD         | int
+行   3, 列  5 | IDENTIFIER      | x
+行   3, 列  7 | OPERATOR        | =
+行   3, 列  9 | INTEGER         | 0
+行   3, 列 10 | DELIMITER       | ;
 ────────────────────────────────────────
-行   4, 列 13 | IDENTIFIER      | x
-行   4, 列 15 | OPERATOR        | =
-行   4, 列 17 | IDENTIFIER      | x
-行   4, 列 19 | OPERATOR        | +
-行   4, 列 21 | IDENTIFIER      | i
-行   4, 列 23 | OPERATOR        | *
-行   4, 列 25 | IDENTIFIER      | j
-行   4, 列 26 | DELIMITER       | ;
-────────────────────────────────────────
-行   5, 列 13 | IDENTIFIER      | x
-行   5, 列 15 | OPERATOR        | =
-行   5, 列 17 | IDENTIFIER      | x
-行   5, 列 19 | OPERATOR        | +
-行   5, 列 21 | IDENTIFIER      | k
+行   5, 列  1 | KEYWORD         | for
+行   5, 列  5 | DELIMITER       | (
+行   5, 列  6 | KEYWORD         | int
+行   5, 列 10 | IDENTIFIER      | i
+行   5, 列 12 | OPERATOR        | =
+行   5, 列 14 | INTEGER         | 0
+行   5, 列 15 | DELIMITER       | ;
+行   5, 列 17 | IDENTIFIER      | i
+行   5, 列 19 | OPERATOR        | <
+行   5, 列 21 | IDENTIFIER      | n
 行   5, 列 22 | DELIMITER       | ;
+行   5, 列 24 | IDENTIFIER      | i
+行   5, 列 25 | OPERATOR        | ++
+行   5, 列 27 | DELIMITER       | )
+行   5, 列 29 | DELIMITER       | {
 ────────────────────────────────────────
-行   6, 列 13 | IDENTIFIER      | x
-行   6, 列 15 | OPERATOR        | =
-行   6, 列 17 | IDENTIFIER      | x
-行   6, 列 19 | OPERATOR        | -
-行   6, 列 21 | IDENTIFIER      | i
-行   6, 列 22 | DELIMITER       | ;
+行   6, 列  5 | KEYWORD         | for
+行   6, 列  9 | DELIMITER       | (
+行   6, 列 10 | KEYWORD         | int
+行   6, 列 14 | IDENTIFIER      | j
+行   6, 列 16 | OPERATOR        | =
+行   6, 列 18 | INTEGER         | 0
+行   6, 列 19 | DELIMITER       | ;
+行   6, 列 21 | IDENTIFIER      | j
+行   6, 列 23 | OPERATOR        | <
+行   6, 列 25 | IDENTIFIER      | m
+行   6, 列 26 | DELIMITER       | ;
+行   6, 列 28 | IDENTIFIER      | j
+行   6, 列 29 | OPERATOR        | ++
+行   6, 列 31 | DELIMITER       | )
+行   6, 列 33 | DELIMITER       | {
 ────────────────────────────────────────
-行   7, 列  9 | DELIMITER       | }
+行   7, 列  9 | KEYWORD         | for
+行   7, 列 13 | DELIMITER       | (
+行   7, 列 14 | KEYWORD         | int
+行   7, 列 18 | IDENTIFIER      | k
+行   7, 列 20 | OPERATOR        | =
+行   7, 列 22 | INTEGER         | 0
+行   7, 列 23 | DELIMITER       | ;
+行   7, 列 25 | IDENTIFIER      | k
+行   7, 列 27 | OPERATOR        | <
+行   7, 列 29 | IDENTIFIER      | j
+行   7, 列 30 | DELIMITER       | ;
+行   7, 列 32 | IDENTIFIER      | k
+行   7, 列 33 | OPERATOR        | ++
+行   7, 列 35 | DELIMITER       | )
+行   7, 列 37 | DELIMITER       | {
 ────────────────────────────────────────
-行   8, 列  5 | DELIMITER       | }
+行   8, 列 13 | IDENTIFIER      | x
+行   8, 列 15 | OPERATOR        | =
+行   8, 列 17 | IDENTIFIER      | x
+行   8, 列 19 | OPERATOR        | +
+行   8, 列 21 | IDENTIFIER      | i
+行   8, 列 23 | OPERATOR        | *
+行   8, 列 25 | IDENTIFIER      | j
+行   8, 列 26 | DELIMITER       | ;
 ────────────────────────────────────────
-行   9, 列  1 | DELIMITER       | }
+行   9, 列 13 | IDENTIFIER      | x
+行   9, 列 15 | OPERATOR        | =
+行   9, 列 17 | IDENTIFIER      | x
+行   9, 列 19 | OPERATOR        | +
+行   9, 列 21 | IDENTIFIER      | k
+行   9, 列 22 | DELIMITER       | ;
+────────────────────────────────────────
+行  10, 列 13 | IDENTIFIER      | x
+行  10, 列 15 | OPERATOR        | =
+行  10, 列 17 | IDENTIFIER      | x
+行  10, 列 19 | OPERATOR        | -
+行  10, 列 21 | IDENTIFIER      | i
+行  10, 列 22 | DELIMITER       | ;
+────────────────────────────────────────
+行  11, 列  9 | DELIMITER       | }
+────────────────────────────────────────
+行  12, 列  5 | DELIMITER       | }
+────────────────────────────────────────
+行  13, 列  1 | DELIMITER       | }
 ────────────────────────────────────────
 
 ========================================
              统计信息
 ========================================
-总Token数:           68
+总Token数:           83
 ────────────────────────────────────────
-关键字:               6
-标识符:              22
-整数:                 3
+关键字:               9
+标识符:              25
+整数:                 6
 小数:                 0
-运算符:              16
-分隔符:              21
+运算符:              19
+分隔符:              24
 字符串:               0
 ────────────────────────────────────────
 错误Token:            0

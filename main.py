@@ -344,6 +344,13 @@ def main(argv: List[str]) -> int:
         rd_log_text.append("      语义/中间代码生成日志\n")
         rd_log_text.append("========================================\n\n")
         rd_log_text.append("\n".join(result.sem_trace))
+
+        if getattr(result, "semantic_errors", None):
+            rd_log_text.append("\n\n")
+            rd_log_text.append("========================================\n")
+            rd_log_text.append("            语义错误\n")
+            rd_log_text.append("========================================\n\n")
+            rd_log_text.append("\n".join(str(e) for e in result.semantic_errors))
         if result.errors:
             rd_log_text.append("\n\n")
             rd_log_text.append("========================================\n")
@@ -374,10 +381,17 @@ def main(argv: List[str]) -> int:
     except Exception as e:
         print(f"保存 FIRST/FOLLOW/SELECT 失败: {e}")
 
+    sem_errs = getattr(result, "semantic_errors", []) or []
+
     if result.errors:
         print(f"⚠ 语法错误数: {len(result.errors)}（请根据控制台报错定位）")
     else:
         print("语法分析通过：未发现语法错误。")
+
+    if sem_errs:
+        print(f"⚠ 语义错误数: {len(sem_errs)}（已写入递归下降日志）")
+    else:
+        print("语义分析通过：未发现语义错误。")
 
     return 0
 

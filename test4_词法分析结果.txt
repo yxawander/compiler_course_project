@@ -1,0 +1,107 @@
+========================================
+          词法分析结果报告
+========================================
+源文件: test4.txt
+========================================
+
+行   1, 列  1 | KEYWORD         | int
+行   1, 列  5 | IDENTIFIER      | n
+行   1, 列  7 | OPERATOR        | =
+行   1, 列  9 | INTEGER         | 3
+行   1, 列 10 | DELIMITER       | ;
+────────────────────────────────────────
+行   2, 列  1 | KEYWORD         | int
+行   2, 列  5 | IDENTIFIER      | m
+行   2, 列  7 | OPERATOR        | =
+行   2, 列  9 | INTEGER         | 2
+行   2, 列 10 | DELIMITER       | ;
+────────────────────────────────────────
+行   3, 列  1 | KEYWORD         | int
+行   3, 列  5 | IDENTIFIER      | x
+行   3, 列  7 | OPERATOR        | =
+行   3, 列  9 | INTEGER         | 0
+行   3, 列 10 | DELIMITER       | ;
+────────────────────────────────────────
+行   5, 列  1 | KEYWORD         | for
+行   5, 列  5 | DELIMITER       | (
+行   5, 列  6 | KEYWORD         | int
+行   5, 列 10 | IDENTIFIER      | i
+行   5, 列 12 | OPERATOR        | =
+行   5, 列 14 | INTEGER         | 0
+行   5, 列 15 | DELIMITER       | ;
+行   5, 列 17 | IDENTIFIER      | i
+行   5, 列 19 | OPERATOR        | <
+行   5, 列 21 | IDENTIFIER      | n
+行   5, 列 22 | DELIMITER       | ;
+行   5, 列 24 | IDENTIFIER      | i
+行   5, 列 25 | OPERATOR        | ++
+行   5, 列 27 | DELIMITER       | )
+行   5, 列 29 | DELIMITER       | {
+────────────────────────────────────────
+行   6, 列  2 | IDENTIFIER      | x
+行   6, 列  4 | OPERATOR        | =
+行   6, 列  6 | IDENTIFIER      | x
+行   6, 列  8 | OPERATOR        | +
+行   6, 列 10 | INTEGER         | 1
+行   6, 列 11 | DELIMITER       | ;
+────────────────────────────────────────
+行   8, 列  2 | KEYWORD         | for
+行   8, 列  6 | DELIMITER       | (
+行   8, 列  7 | KEYWORD         | int
+行   8, 列 11 | IDENTIFIER      | j
+行   8, 列 13 | OPERATOR        | =
+行   8, 列 15 | INTEGER         | 0
+行   8, 列 16 | DELIMITER       | ;
+行   8, 列 18 | IDENTIFIER      | j
+行   8, 列 20 | OPERATOR        | <
+行   8, 列 22 | IDENTIFIER      | m
+行   8, 列 23 | DELIMITER       | ;
+行   8, 列 25 | IDENTIFIER      | j
+行   8, 列 26 | OPERATOR        | ++
+行   8, 列 28 | DELIMITER       | )
+行   8, 列 30 | DELIMITER       | {
+────────────────────────────────────────
+行   9, 列  3 | IDENTIFIER      | x
+行   9, 列  5 | OPERATOR        | =
+行   9, 列  7 | IDENTIFIER      | x
+行   9, 列  9 | OPERATOR        | +
+行   9, 列 11 | IDENTIFIER      | i
+行   9, 列 13 | OPERATOR        | *
+行   9, 列 15 | IDENTIFIER      | j
+行   9, 列 16 | DELIMITER       | ;
+────────────────────────────────────────
+行  10, 列  3 | IDENTIFIER      | x
+行  10, 列  5 | OPERATOR        | =
+行  10, 列  7 | IDENTIFIER      | x
+行  10, 列  9 | OPERATOR        | +
+行  10, 列 11 | DELIMITER       | ;
+────────────────────────────────────────
+行  11, 列  3 | IDENTIFIER      | x
+行  11, 列  5 | OPERATOR        | =
+行  11, 列  7 | IDENTIFIER      | x
+行  11, 列  9 | OPERATOR        | +
+行  11, 列 11 | INTEGER         | 2
+行  11, 列 12 | DELIMITER       | ;
+────────────────────────────────────────
+行  12, 列  2 | DELIMITER       | }
+────────────────────────────────────────
+行  13, 列  1 | DELIMITER       | }
+────────────────────────────────────────
+
+========================================
+             统计信息
+========================================
+总Token数:           72
+────────────────────────────────────────
+关键字:               7
+标识符:              21
+整数:                 7
+小数:                 0
+运算符:              18
+分隔符:              19
+字符串:               0
+────────────────────────────────────────
+错误Token:            0
+错误率:            0.00%
+========================================
+分析完成。

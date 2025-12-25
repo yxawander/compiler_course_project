@@ -16,9 +16,16 @@ from lexer.token import Token
 class DFALexer:
     token_dfas: Dict[str, DFA] = field(default_factory=OrderedDict)
     patterns: "OrderedDict[str, str]" = field(default_factory=OrderedDict)
+    verbose_build: bool = True
+    build_log: List[str] = field(default_factory=list, init=False)
 
     def __post_init__(self) -> None:
         self._initialize_dfas()
+
+    def _log_build(self, msg: str) -> None:
+        self.build_log.append(msg)
+        if self.verbose_build:
+            print(msg)
 
     def _initialize_dfas(self) -> None:
         patterns: "OrderedDict[str, str]" = OrderedDict()
@@ -60,13 +67,18 @@ class DFALexer:
 
         for token_type, pattern in patterns.items():
             try:
+                self._log_build(f"\n构建 {token_type} 的模式: {pattern}")
                 # 词法分析完整流程：正规式 -> NFA -> DFA -> 最小化DFA
                 nfa = nfa_builder.build_nfa(pattern)
+                self._log_build("NFA构建成功")
                 dfa = NFAToDFAConverter(nfa).convert_to_dfa()
+                self._log_build(f"DFA转换成功，状态数: {len(dfa.states)}")
                 minimized = DFAMinimizer().minimize(dfa)
+                self._log_build(f"DFA最小化成功，状态数: {len(minimized.states)}")
                 self.token_dfas[token_type] = minimized
+                self._log_build(f"=== {token_type} DFA构建完成 ===")
             except Exception as e:
-                print(f"❌ 构建 {token_type} 失败: {e}")
+                self._log_build(f"❌ 构建 {token_type} 失败: {e}")
 
     def dump_patterns_and_dfas(self) -> str:
         lines: List[str] = []

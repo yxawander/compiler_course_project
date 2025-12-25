@@ -103,34 +103,83 @@
                     进入 <Block>
                       进入 <StmtList>
                         进入 <Stmt>
-                          使用产生式: Stmt -> AssignStmt ;
-                          进入 <AssignStmt>
-                            进入 <AssignExpr>
+                          使用产生式: Stmt -> ForStmt
+                          进入 <ForStmt>
+                            使用产生式: ForStmt -> for ( ForInitOpt ; ForCondOpt ; ForIterOpt ) Stmt
+                            使用产生式: ForInitOpt -> DeclStmt
+                            进入 <DeclStmt>
+                              match int (int)
                               match = (=)
                               进入 <Expr>
                                 进入 <AddExpr>
                                   进入 <MulExpr>
                                     进入 <Unary>
                                       进入 <Primary>
-                                        match IDENT (x)
-                                      退出 <Primary>
-                                    退出 <Unary>
-                                  退出 <MulExpr>
-                                  进入 <MulExpr>
-                                    进入 <Unary>
-                                      进入 <Primary>
-                                        match IDENT (i)
-                                      退出 <Primary>
-                                    退出 <Unary>
-                                    进入 <Unary>
-                                      进入 <Primary>
-                                        match IDENT (j)
+                                        match NUM (0)
                                       退出 <Primary>
                                     退出 <Unary>
                                   退出 <MulExpr>
                                 退出 <AddExpr>
                               退出 <Expr>
-                            退出 <AssignExpr>
+                            退出 <DeclStmt>
+                            使用产生式: ForCondOpt -> Expr
+                            进入 <Expr>
+                              进入 <AddExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match IDENT (k)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                              退出 <AddExpr>
+                              进入 <AddExpr>
+                                进入 <MulExpr>
+                                  进入 <Unary>
+                                    进入 <Primary>
+                                      match IDENT (j)
+                                    退出 <Primary>
+                                  退出 <Unary>
+                                退出 <MulExpr>
+                              退出 <AddExpr>
+                            退出 <Expr>
+                            使用产生式: ForIterOpt -> AssignStmt | IncDec
+                            进入 <IncDec>
+                              match ++ (++)
+                            退出 <IncDec>
+                            进入 <Stmt>
+                              使用产生式: Stmt -> Block
+                              进入 <Block>
+                                进入 <StmtList>
+                                  进入 <Stmt>
+                                    使用产生式: Stmt -> AssignStmt ;
+                                    进入 <AssignStmt>
+                                      进入 <AssignExpr>
+                                        match = (=)
+                                        进入 <Expr>
+                                          进入 <AddExpr>
+                                            进入 <MulExpr>
+                                              进入 <Unary>
+                                                进入 <Primary>
+                                                  match IDENT (x)
+                                                退出 <Primary>
+                                              退出 <Unary>
+                                            退出 <MulExpr>
+                                            进入 <MulExpr>
+                                              进入 <Unary>
+                                                进入 <Primary>
+                                                  match IDENT (i)
+                                                退出 <Primary>
+                                              退出 <Unary>
+                                              进入 <Unary>
+                                                进入 <Primary>
+                                                  match IDENT (j)
+                                                退出 <Primary>
+                                              退出 <Unary>
+                                            退出 <MulExpr>
+                                          退出 <AddExpr>
+                                        退出 <Expr>
+                                      退出 <AssignExpr>
 
 【赋值语句分析表】x=x+i*j;
 文法 | 分析串 | 分析字符 | 剩余串
@@ -147,7 +196,92 @@ Factor -> id                x=x+i*          j             j;
 TermP -> ε                  x=x+i*j         ;             ;
 ExprP -> ε                  x=x+i*j         ;             ;
 
-                          退出 <AssignStmt>
+                                    退出 <AssignStmt>
+                                  退出 <Stmt>
+                                  进入 <Stmt>
+                                    使用产生式: Stmt -> AssignStmt ;
+                                    进入 <AssignStmt>
+                                      进入 <AssignExpr>
+                                        match = (=)
+                                        进入 <Expr>
+                                          进入 <AddExpr>
+                                            进入 <MulExpr>
+                                              进入 <Unary>
+                                                进入 <Primary>
+                                                  match IDENT (x)
+                                                退出 <Primary>
+                                              退出 <Unary>
+                                            退出 <MulExpr>
+                                            进入 <MulExpr>
+                                              进入 <Unary>
+                                                进入 <Primary>
+                                                  match IDENT (k)
+                                                退出 <Primary>
+                                              退出 <Unary>
+                                            退出 <MulExpr>
+                                          退出 <AddExpr>
+                                        退出 <Expr>
+                                      退出 <AssignExpr>
+
+【赋值语句分析表】x=x+k;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            x             x=x+k;
+Expr -> Term ExprP          x=              x             x+k;
+Term -> Factor TermP        x=              x             x+k;
+Factor -> id                x=              x             x+k;
+TermP -> ε                  x=x             +             +k;
+ExprP -> + Term ExprP       x=x             +             +k;
+Term -> Factor TermP        x=x+            k             k;
+Factor -> id                x=x+            k             k;
+TermP -> ε                  x=x+k           ;             ;
+ExprP -> ε                  x=x+k           ;             ;
+
+                                    退出 <AssignStmt>
+                                  退出 <Stmt>
+                                  进入 <Stmt>
+                                    使用产生式: Stmt -> AssignStmt ;
+                                    进入 <AssignStmt>
+                                      进入 <AssignExpr>
+                                        match = (=)
+                                        进入 <Expr>
+                                          进入 <AddExpr>
+                                            进入 <MulExpr>
+                                              进入 <Unary>
+                                                进入 <Primary>
+                                                  match IDENT (x)
+                                                退出 <Primary>
+                                              退出 <Unary>
+                                            退出 <MulExpr>
+                                            进入 <MulExpr>
+                                              进入 <Unary>
+                                                进入 <Primary>
+                                                  match IDENT (i)
+                                                退出 <Primary>
+                                              退出 <Unary>
+                                            退出 <MulExpr>
+                                          退出 <AddExpr>
+                                        退出 <Expr>
+                                      退出 <AssignExpr>
+
+【赋值语句分析表】x=x-i;
+文法 | 分析串 | 分析字符 | 剩余串
+S -> id = Expr ;                            x             x=x-i;
+Expr -> Term ExprP          x=              x             x-i;
+Term -> Factor TermP        x=              x             x-i;
+Factor -> id                x=              x             x-i;
+TermP -> ε                  x=x             -             -i;
+ExprP -> - Term ExprP       x=x             -             -i;
+Term -> Factor TermP        x=x-            i             i;
+Factor -> id                x=x-            i             i;
+TermP -> ε                  x=x-i           ;             ;
+ExprP -> ε                  x=x-i           ;             ;
+
+                                    退出 <AssignStmt>
+                                  退出 <Stmt>
+                                退出 <StmtList>
+                              退出 <Block>
+                            退出 <Stmt>
+                          退出 <ForStmt>
                         退出 <Stmt>
                       退出 <StmtList>
                     退出 <Block>
@@ -174,9 +308,21 @@ j = 0
 L3:
 t3 = j < m
 ifFalse t3 goto L4
-t5 = i * j
-t6 = x + t5
-x = t6
+k = 0
+L5:
+t5 = k < j
+ifFalse t5 goto L6
+t7 = i * j
+t8 = x + t7
+x = t8
+t9 = x + k
+x = t9
+t10 = x - i
+x = t10
+t6 = k + 1
+k = t6
+goto L5
+L6:
 t4 = j + 1
 j = t4
 goto L3

@@ -36,31 +36,63 @@
 行   2, 列 31 | DELIMITER       | )
 行   2, 列 33 | DELIMITER       | {
 ────────────────────────────────────────
-行   3, 列  9 | IDENTIFIER      | x
-行   3, 列 11 | OPERATOR        | =
-行   3, 列 13 | IDENTIFIER      | x
-行   3, 列 15 | OPERATOR        | +
-行   3, 列 17 | IDENTIFIER      | i
-行   3, 列 19 | OPERATOR        | *
-行   3, 列 21 | IDENTIFIER      | j
-行   3, 列 22 | DELIMITER       | ;
+行   3, 列  9 | KEYWORD         | for
+行   3, 列 13 | DELIMITER       | (
+行   3, 列 14 | KEYWORD         | int
+行   3, 列 18 | IDENTIFIER      | k
+行   3, 列 20 | OPERATOR        | =
+行   3, 列 22 | INTEGER         | 0
+行   3, 列 23 | DELIMITER       | ;
+行   3, 列 25 | IDENTIFIER      | k
+行   3, 列 27 | OPERATOR        | <
+行   3, 列 29 | IDENTIFIER      | j
+行   3, 列 30 | DELIMITER       | ;
+行   3, 列 32 | IDENTIFIER      | k
+行   3, 列 33 | OPERATOR        | ++
+行   3, 列 35 | DELIMITER       | )
+行   3, 列 37 | DELIMITER       | {
 ────────────────────────────────────────
-行   4, 列  5 | DELIMITER       | }
+行   4, 列 13 | IDENTIFIER      | x
+行   4, 列 15 | OPERATOR        | =
+行   4, 列 17 | IDENTIFIER      | x
+行   4, 列 19 | OPERATOR        | +
+行   4, 列 21 | IDENTIFIER      | i
+行   4, 列 23 | OPERATOR        | *
+行   4, 列 25 | IDENTIFIER      | j
+行   4, 列 26 | DELIMITER       | ;
 ────────────────────────────────────────
-行   5, 列  1 | DELIMITER       | }
+行   5, 列 13 | IDENTIFIER      | x
+行   5, 列 15 | OPERATOR        | =
+行   5, 列 17 | IDENTIFIER      | x
+行   5, 列 19 | OPERATOR        | +
+行   5, 列 21 | IDENTIFIER      | k
+行   5, 列 22 | DELIMITER       | ;
+────────────────────────────────────────
+行   6, 列 13 | IDENTIFIER      | x
+行   6, 列 15 | OPERATOR        | =
+行   6, 列 17 | IDENTIFIER      | x
+行   6, 列 19 | OPERATOR        | -
+行   6, 列 21 | IDENTIFIER      | i
+行   6, 列 22 | DELIMITER       | ;
+────────────────────────────────────────
+行   7, 列  9 | DELIMITER       | }
+────────────────────────────────────────
+行   8, 列  5 | DELIMITER       | }
+────────────────────────────────────────
+行   9, 列  1 | DELIMITER       | }
 ────────────────────────────────────────
 
 ========================================
              统计信息
 ========================================
-总Token数:           40
+总Token数:           68
 ────────────────────────────────────────
-关键字:               4
-标识符:              12
-整数:                 2
+关键字:               6
+标识符:              22
+整数:                 3
 小数:                 0
-运算符:               9
-分隔符:              13
+运算符:              16
+分隔符:              21
 字符串:               0
 ────────────────────────────────────────
 错误Token:            0

@@ -1,5 +1,9 @@
 for (int i = 0; i < n; i++) {
     for (int j = 0; j < m; j++) {
-        x = x + i * j;
+        for (int k = 0; k < j; k++) {
+            x = x + i * j;
+            x = x + k;
+            x = x - i;
+        }
     }
 }
